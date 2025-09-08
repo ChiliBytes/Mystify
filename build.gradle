@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+group = 'com.chilibytes.mystify'
+version = '1.0.0-1'
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.swing', 'javafx.graphics' ]
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.springframework:spring-context:6.1.8'
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
+    implementation("com.google.code.gson:gson:2.7")
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+mainClassName = 'com.chilibytes.mystify.Main'
