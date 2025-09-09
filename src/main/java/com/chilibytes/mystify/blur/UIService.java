@@ -20,7 +20,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
-
 import java.util.Optional;
 
 import static com.chilibytes.mystify.common.CustomDialog.showInfo;
@@ -63,6 +62,7 @@ public class UIService {
     private static final int LEFT_PANE_DEFAULT_PADDING = 15;
     private static final int FOOTER_DEFAULT_MIN_HEIGHT = 35;
     private static final int FOOTER_DEFAULT_MAX_HEIGHT = 45;
+    private static final String APP_ICON_RESOURCE = "/icons/msf.png";
 
 
     public UIService(ImageProcessor imageProcessor, FileService fileService,
@@ -122,6 +122,11 @@ public class UIService {
 
         // Configuring shortcut events
         setupKeyboardShortcuts(scene);
+
+        Optional.ofNullable(getClass().getResourceAsStream(APP_ICON_RESOURCE)).ifPresentOrElse(
+                inputStream -> primaryStage.getIcons().add(new Image(inputStream)),
+                () -> log.warn("The specified application icon could not be loaded, using defaults")
+        );
 
         primaryStage.setScene(scene);
         primaryStage.show();
