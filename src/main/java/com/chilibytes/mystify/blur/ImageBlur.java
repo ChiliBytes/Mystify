@@ -1,8 +1,6 @@
 package com.chilibytes.mystify.blur;
 
-import com.chilibytes.mystify.common.CustomDialog;
 import com.chilibytes.mystify.config.SpringConfig;
-import com.chilibytes.mystify.exception.MystifyGenericException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
