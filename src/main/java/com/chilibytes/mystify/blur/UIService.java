@@ -42,6 +42,8 @@ public class UIService {
     private Label zoomLabel;
     private Button undoButtonReference;
     private boolean isDragging = false;
+    private VBox leftPaneControls;
+    private HBox zoomContainer;
 
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
     private static final String BUTTON_STYLE = "-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-weight: bold;";
@@ -49,9 +51,13 @@ public class UIService {
     private static final String LABEL_STYLE = "-fx-text-fill: #ECF0F1; -fx-font-weight: bold;";
     private static final String APP_TITLE = "ChilliBytes - Mystify Image Editor 1.0";
     private static final String ZOOM_VALUE_TEXT = "Zoom: %.0f%%";
-
     private static final String BLUR_SLIDER_LABEL = "Radius: ";
     private static final String BRUSH_SLIDER_LABEL = "Brush Size: ";
+    private static final int LEFT_PANE_DEFAULT_MIN_WIDTH = 80;
+    private static final int LEFT_PANE_DEFAULT_MAX_WIDTH = 150;
+    private static final int LEFT_PANE_DEFAULT_PADDING = 15;
+    private static final int FOOTER_DEFAULT_MIN_HEIGHT = 35;
+    private static final int FOOTER_DEFAULT_MAX_HEIGHT = 45;
 
 
     public UIService(ImageProcessor imageProcessor, FileService fileService,
@@ -126,10 +132,12 @@ public class UIService {
         zoomSlider.setMinWidth(200);
         zoomSlider.setMaxWidth(300);
 
-        HBox zoomContainer = new HBox(10, zoomSlider, zoomLabel);
+        zoomContainer = new HBox(10, zoomSlider, zoomLabel);
         zoomContainer.setAlignment(Pos.CENTER_RIGHT);
         zoomContainer.setPadding(new Insets(10));
         zoomContainer.setStyle(CONTROLS_COLOR_STYLE);
+        zoomContainer.setMinHeight(FOOTER_DEFAULT_MIN_HEIGHT);
+        zoomContainer.setMaxHeight(FOOTER_DEFAULT_MAX_HEIGHT);
 
         return zoomContainer;
     }
@@ -180,14 +188,14 @@ public class UIService {
         var buttonsRow5 = new HBox(10, undoButton);
         buttonsRow5.setAlignment(Pos.BASELINE_LEFT);
 
-        var controls = new VBox(12, buttonsRow1, buttonsRow2, buttonsRow3, buttonsRow4, buttonsRow5);
+        leftPaneControls = new VBox(12, buttonsRow1, buttonsRow2, buttonsRow3, buttonsRow4, buttonsRow5);
 
-        controls.setPadding(new Insets(15));
-        controls.setStyle(CONTROLS_COLOR_STYLE);
-        controls.setMinWidth(80);
-        controls.setMaxWidth(150);
+        leftPaneControls.setPadding(new Insets(LEFT_PANE_DEFAULT_PADDING));
+        leftPaneControls.setStyle(CONTROLS_COLOR_STYLE);
+        leftPaneControls.setMinWidth(LEFT_PANE_DEFAULT_MIN_WIDTH);
+        leftPaneControls.setMaxWidth(LEFT_PANE_DEFAULT_MAX_WIDTH);
 
-        return controls;
+        return leftPaneControls;
     }
 
     private Button createIconButton(FontAwesomeIcon icon, String tooltipText) {
@@ -399,6 +407,14 @@ public class UIService {
         blurSlider.setValue(blurRadius);
         brushSlider.setValue(brushSize);
         zoomSlider.setValue(settings.getZoomLevel() * 100);
+
+        leftPaneControls.setPadding(new Insets(settings.getLeftPanePadding()));
+        leftPaneControls.setStyle(CONTROLS_COLOR_STYLE);
+        leftPaneControls.setMinWidth(settings.getLeftPaneMinWidth());
+        leftPaneControls.setMaxWidth(settings.getLeftPaneMaxWidth());
+
+        zoomContainer.setMinHeight(settings.getFooterMinHeight());
+        zoomContainer.setMaxHeight(settings.getFooterMaxHeight());
 
         radiusLabel.setText(BLUR_SLIDER_LABEL + blurRadius + "px");
         brushSizeLabel.setText(BRUSH_SLIDER_LABEL + brushSize + "px");

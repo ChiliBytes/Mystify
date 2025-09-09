@@ -1,5 +1,10 @@
 {
   "blurLevel": 4,
   "brushSize": 27,
-  "zoomLevel": 3.3499999999999996
+  "zoomLevel": 3.3499999999999996,
+  "leftPaneMinWidth": 30,
+  "leftPaneMaxWidth": 50,
+  "leftPanePadding": 5,
+  "footerMinHeight": 35,
+  "footerMaxHeight": 45
 }
