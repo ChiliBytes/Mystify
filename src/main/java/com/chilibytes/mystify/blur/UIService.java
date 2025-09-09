@@ -18,9 +18,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.util.Optional;
 
+import static com.chilibytes.mystify.common.CustomDialog.showInfo;
+
+@Slf4j
 public class UIService {
 
     private final ImageProcessor imageProcessor;
@@ -71,8 +76,8 @@ public class UIService {
     }
 
     public void initializeUI(Stage primaryStage) {
+        log.info("Initializing App UI ...");
         primaryStage.setTitle(APP_TITLE);
-
         var loadButton = createIconButton(FontAwesomeIcon.FOLDER_OPEN, "Load Image");
         var saveButton = createIconButton(FontAwesomeIcon.SAVE, "Save Image");
         var resetButton = createIconButton(FontAwesomeIcon.REFRESH, "Reset Image");
@@ -299,10 +304,10 @@ public class UIService {
         if (currentImage != null) {
             boolean saved = fileService.saveImage(stage, currentImage, fileService.getDefaultExtension());
             if (saved) {
-                showAlert("Success", "Image saved successfully");
+                showInfo("Success", "Image saved successfully");
             }
         } else {
-            showAlert("Warning", "No images to save found!");
+            showInfo("Warning", "No images to save found!");
         }
     }
 
@@ -421,6 +426,7 @@ public class UIService {
         zoomLabel.setText(String.format(ZOOM_VALUE_TEXT, settings.getZoomLevel() * 100));
 
         zoomService.applyZoom(imageView);
+        log.info("Settings has been loaded with the following values: {}", settings);
     }
 
     private void showSettingsDialog() {
@@ -544,13 +550,4 @@ public class UIService {
         // Persist the configuration
         settingsService.saveSettings(blurRadius, brushSize, newZoomLevel);
     }
-
-    private void showAlert(String title, String message) {
-        var alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
-

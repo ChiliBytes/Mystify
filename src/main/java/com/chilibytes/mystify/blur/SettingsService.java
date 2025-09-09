@@ -1,13 +1,17 @@
 package com.chilibytes.mystify.blur;
 
-import com.chilibytes.mystify.exception.MystifyGenericException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static com.chilibytes.mystify.common.CustomDialog.showError;
+
+@Slf4j
 public class SettingsService {
 
     private static final String CONFIG_FILE = "settings.json";
@@ -24,7 +28,12 @@ public class SettingsService {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(currentSettings, writer);
         } catch (IOException e) {
-            throw new MystifyGenericException("IOException on saveSettings() " + e.getMessage());
+            log.error("IOException on saveSettings(): {}", e.getMessage(), e);
+            showError("Save Settings", "An IOException has occurred while saving the settings", e);
+        }
+        catch (Exception ex) {
+            log.error("Error on saveSettings(): {}", ex.getMessage(), ex);
+            showError("Save Settings", "An error has occurred while saving the settings", ex);
         }
     }
 
@@ -37,12 +46,14 @@ public class SettingsService {
                 return currentSettings;
             }
         } catch (IOException e) {
-            throw new MystifyGenericException("IOException on loadSettings() " + e.getMessage());
+            log.error("IOException on loadSettings(): {}", e.getMessage(), e);
+            showError("Load Settings", "An IOException has occurred while loading the settings", e);
         }
 
         return new Settings(15, 20, 1.0, 30, 50, 5, 35, 45);
     }
 
+    @ToString
     public static class Settings {
         private final int blurLevel;
         private final int brushSize;

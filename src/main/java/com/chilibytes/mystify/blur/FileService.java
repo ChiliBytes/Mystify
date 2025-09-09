@@ -1,10 +1,10 @@
 package com.chilibytes.mystify.blur;
 
-import com.chilibytes.mystify.exception.MystifyGenericException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageOutputStream;
@@ -15,6 +15,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Optional;
 
+import static com.chilibytes.mystify.common.CustomDialog.showError;
+
+
+@Slf4j
 public class FileService {
 
     private String defaultExtension = "png";
@@ -29,10 +33,10 @@ public class FileService {
                 setDefaultExtensionFromFile(file);
                 return Optional.of(image);
             } catch (Exception e) {
-                throw new MystifyGenericException("Error loading image: " + e.getMessage(), e);
+                log.error("Error on loadImage(): {}", e.getMessage());
+                showError("Load Image", "An Error has occurred while loading the image", e);
             }
         }
-
         return Optional.empty();
     }
 
@@ -45,10 +49,15 @@ public class FileService {
                 saveImageToFile(image, file);
                 return true;
             } catch (IOException e) {
-                throw new MystifyGenericException("Error saving image: " + e.getMessage(), e);
+                log.error("IOException on saveImage(): {}", e.getMessage(), e);
+                showError("Save Image", "An IOException has occurred while saving the image", e);
+
+            }
+            catch (Exception ex) {
+                log.error("Error on saveImage(): {}", ex.getMessage(), ex);
+                showError("Save Image", "An error has occurred while saving the image", ex);
             }
         }
-
         return false;
     }
 
