@@ -501,8 +501,11 @@ public class UIService {
         VBox zoomGroup = new VBox(5, zoomValueLabel, zoomDialogSlider);
         zoomGroup.setAlignment(Pos.CENTER_LEFT);
 
+        var settingsTitleLabel = new Label("Blur Image settings");
+        settingsTitleLabel.setStyle(LABEL_STYLE);
+
         layout.getChildren().addAll(
-                new Label("Level Settings"),
+                settingsTitleLabel,
                 blurGroup,
                 brushGroup,
                 zoomGroup,
