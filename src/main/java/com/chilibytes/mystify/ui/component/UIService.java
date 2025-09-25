@@ -117,11 +117,8 @@ public class UIService {
         );
     }
 
-    //TODO: Implement Application Cache methods here (it is not feasible to read the settings file multiple times)
     private void applySettingsToControls() {
-        // Load settings to configure controls such as left panel size and padding
-        ApplicationOptionManagerService.Settings settings = applicationOptionManagerService.loadSettings();
-        principalLayoutsBuilder.applySettingsToOuterPanels(settings);
+        principalLayoutsBuilder.applySettingsToOuterPanels();
         zoomService.applyZoom(imageView);
     }
 }

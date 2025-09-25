@@ -1,8 +1,8 @@
 package com.chilibytes.mystify.ui.component;
 
+import com.chilibytes.mystify.ui.MystifyApplication;
 import com.chilibytes.mystify.ui.common.ButtonDecorator;
 import com.chilibytes.mystify.ui.common.ControlDecorator;
-import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -65,11 +65,12 @@ public class PrincipalLayoutsBuilder {
         });
     }
 
-    public void applySettingsToOuterPanels(ApplicationOptionManagerService.Settings settings) {
-        leftPaneControls.setPadding(new Insets(settings.getLeftPanePadding()));
-        leftPaneControls.setMinWidth(settings.getLeftPaneMinWidth());
-        leftPaneControls.setMaxWidth(settings.getLeftPaneMaxWidth());
-        zoomContainer.setMinHeight(settings.getFooterMinHeight());
-        zoomContainer.setMaxHeight(settings.getFooterMaxHeight());
+    public void applySettingsToOuterPanels() {
+
+        leftPaneControls.setPadding(new Insets(MystifyApplication.controlSettingsCache.getLeftPanePadding()));
+        leftPaneControls.setMinWidth(MystifyApplication.controlSettingsCache.getLeftPaneMinWidth());
+        leftPaneControls.setMaxWidth(MystifyApplication.controlSettingsCache.getLeftPaneMaxWidth());
+        zoomContainer.setMinHeight(MystifyApplication.controlSettingsCache.getFooterMinHeight());
+        zoomContainer.setMaxHeight(MystifyApplication.controlSettingsCache.getFooterMaxHeight());
     }
 }

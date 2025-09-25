@@ -1,5 +1,6 @@
 package com.chilibytes.mystify.config.service;
 
+import com.chilibytes.mystify.ui.MystifyApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -23,6 +24,15 @@ public class ApplicationOptionManagerService {
     private Settings currentSettings;
 
     public void saveSettings(int blurLevel, int brushSize) {
+       persistSettings(blurLevel, brushSize);
+       bulkSettingsToCache(blurLevel, brushSize);
+    }
+    private void bulkSettingsToCache(int blurLevel, int brushSize){
+        MystifyApplication.controlSettingsCache.setBlurLevel(blurLevel);
+        MystifyApplication.controlSettingsCache.setBrushSize(brushSize);
+    }
+
+    private void persistSettings(int blurLevel, int brushSize) {
         currentSettings = new Settings(blurLevel, brushSize);
 
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
