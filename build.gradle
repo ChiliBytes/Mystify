@@ -5,10 +5,10 @@ plugins {
 }
 
 group = 'com.chilibytes.mystify'
-version = 1
+version = 2
 
 ext {
-    versionName='1.0.0-0'
+    versionName = '1.0.1-0'
 }
 
 repositories {
@@ -17,7 +17,7 @@ repositories {
 
 javafx {
     version = "21"
-    modules = [ 'javafx.controls', 'javafx.swing', 'javafx.graphics' ]
+    modules = ['javafx.controls', 'javafx.swing', 'javafx.graphics']
 }
 
 processResources {
@@ -32,6 +32,15 @@ sourceSets {
         resources {
             srcDirs = ['src/main/resources']
         }
+    }
+}
+
+run {
+    debugOptions {
+        enabled = true
+        port = 5005
+        server = true
+        suspend = false
     }
 }
 
@@ -53,7 +62,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.9'
     implementation 'org.slf4j:slf4j-simple:2.0.9'
 }
-
 
 test {
     useJUnitPlatform()

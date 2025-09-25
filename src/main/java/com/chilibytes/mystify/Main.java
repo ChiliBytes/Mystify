@@ -1,17 +1,16 @@
 package com.chilibytes.mystify;
 
-import com.chilibytes.mystify.ui.ImageBlur;
-import javafx.application.Application;
+import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends javafx.application.Application {
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        ImageBlur app = new ImageBlur();
+        MystifyApplication app = new MystifyApplication();
         app.start(primaryStage);
     }
 }
