@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+group = 'com.chilibytes.mystify'
+version = 1
+
+ext {
+    versionName='1.0.0-0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.swing', 'javafx.graphics' ]
+}
+
+processResources {
+    filesMatching('**/application.properties') {
+        expand(version: project.version,
+                versionName: project.ext.versionName,)
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.springframework:spring-context:6.1.8'
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
+    implementation("com.google.code.gson:gson:2.7")
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // SLF4J
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+mainClassName = 'com.chilibytes.mystify.Main'
