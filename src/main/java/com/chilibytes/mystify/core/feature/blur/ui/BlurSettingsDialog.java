@@ -2,6 +2,7 @@ package com.chilibytes.mystify.core.feature.blur.ui;
 
 import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.core.feature.blur.service.BlurEventHandlerService;
+import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,10 +43,8 @@ public class BlurSettingsDialog {
 
 
     public void applyBlurDialogSettings() {
-        // Load settings to configure the inner sliders
-        ApplicationOptionManagerService.Settings settings = applicationOptionManagerService.loadSettings();
-        this.blurSlider.setValue(settings.getBlurLevel());
-        this.brushSlider.setValue(settings.getBrushSize());
+        this.blurSlider.setValue(MystifyApplication.controlSettingsCache.getBlurLevel());
+        this.brushSlider.setValue(MystifyApplication.controlSettingsCache.getBrushSize());
 
         this.blurLabel.setText("Radius: " + (int) this.blurSlider.getValue() + "px");
         this.brushLabel.setText(BRUSH_SLIDER_LABEL + (int) this.brushSlider.getValue() + "px");
@@ -106,8 +105,8 @@ public class BlurSettingsDialog {
     }
 
     private void configureSceneControls() {
-        blurSlider = createSlider(0, 100, 50, 300, 300);
-        brushSlider = createSlider(0, 100, 50, 300, 300);
+        blurSlider = createSlider();
+        brushSlider = createSlider();
 
         blurLabel = createLabel(BLUR_SLIDER_LABEL + (int) blurSlider.getValue());
         brushLabel = createLabel(BRUSH_SLIDER_LABEL + (int) brushSlider.getValue());

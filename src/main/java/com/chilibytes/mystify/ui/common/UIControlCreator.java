@@ -105,6 +105,10 @@ public class UIControlCreator {
         return createSlider(min, max, value, 250, 250);
     }
 
+    public static Slider createSlider() {
+        return createSlider(0, 100, 50, 300, 300);
+    }
+
     public static Label createLabel(String text) {
         Label label = new Label(text);
         label.setStyle(LABEL_STYLE);
@@ -115,13 +119,13 @@ public class UIControlCreator {
         return new Label(text);
     }
 
-    public static TextArea createRawTextArea(String text){
+    public static TextArea createRawTextArea(String text) {
         TextArea textArea = new TextArea(text);
         textArea.setEditable(false);
         textArea.setWrapText(true);
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMaxHeight(Double.MAX_VALUE);
-        return  textArea;
+        return textArea;
     }
 
     public static HBox createFooter(Slider zoomSlider) {

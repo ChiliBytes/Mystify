@@ -2,6 +2,7 @@ package com.chilibytes.mystify.core.feature.blur;
 
 import com.chilibytes.mystify.common.service.UndoService;
 import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
+import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -99,9 +100,6 @@ public class BlurProcessor {
     }
 
     public void handleApplyBlur(MouseEvent event, WritableImage currentImage, ImageView imageView) {
-        // Load settings to get the brush and brush levels if the user hasn't entered to the Blur settings dialog
-        ApplicationOptionManagerService.Settings settings = applicationOptionManagerService.loadSettings();
-
         if (currentImage != null) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED ||
                     (event.getEventType() == MouseEvent.MOUSE_DRAGGED && !isDragging)) {
@@ -113,8 +111,8 @@ public class BlurProcessor {
             double imageY = convertToImageY(event.getY(), imageView);
 
             if (isWithinImageBounds(currentImage, (int) imageX, (int) imageY)) {
-                int brushSize = settings.getBrushSize();
-                int blurRadius = settings.getBlurLevel();
+                int brushSize = MystifyApplication.controlSettingsCache.getBrushSize();
+                int blurRadius = MystifyApplication.controlSettingsCache.getBlurLevel();
 
                 applyCircularBlur(currentImage, (int) imageX, (int) imageY,
                         brushSize, blurRadius);

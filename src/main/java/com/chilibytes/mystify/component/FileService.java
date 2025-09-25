@@ -1,10 +1,13 @@
 package com.chilibytes.mystify.component;
 
+import com.chilibytes.mystify.config.ApplicationProperties;
+import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
@@ -22,11 +26,29 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 @Getter
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FileService {
 
     private String defaultExtension = "png";
+    private final ApplicationProperties applicationProperties;
+    private List<String> imagesAllowedExtensions;
+    private List<String> imagesAllowedWildCards;
+
+    @PostConstruct
+    private void getAllowedExtensions() {
+        this.imagesAllowedExtensions = applicationProperties.getAppImagesAllowedExtensions();
+        this.imagesAllowedWildCards = applicationProperties.getAppImagesAllowedWildCards(this.imagesAllowedExtensions);
+    }
+
+    private List<String> getAllowedWildcardsPart(String extension) {
+        return imagesAllowedWildCards.stream()
+                .filter(ext -> ext.equalsIgnoreCase(extension))
+                .map(ext -> "*." + ext)
+                .toList();
+    }
 
     public Optional<Image> loadImage(Stage stage) {
+
         FileChooser fileChooser = createImageFileChooser();
         File file = fileChooser.showOpenDialog(stage);
 
@@ -66,7 +88,7 @@ public class FileService {
     private FileChooser createImageFileChooser() {
         var fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.PNG")
+                new FileChooser.ExtensionFilter("Images", this.imagesAllowedWildCards)
         );
         return fileChooser;
     }
@@ -79,8 +101,9 @@ public class FileService {
 
         fileChooser.getExtensionFilters().add(defaultFilter);
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("PNG Files", "*.png"),
-                new FileChooser.ExtensionFilter("JPEG Files", "*.jpg", "*.jpeg"),
+                new FileChooser.ExtensionFilter("PNG Files", getAllowedWildcardsPart("*.png")),
+                new FileChooser.ExtensionFilter("JPG Files", getAllowedWildcardsPart("*.jpg")),
+                new FileChooser.ExtensionFilter("JPEG Files", getAllowedWildcardsPart("*.jpeg")),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 
@@ -94,7 +117,7 @@ public class FileService {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
         String formatName = getFileExtension(file).toLowerCase();
 
-        if (formatName.equals("jpg") || formatName.equals("jpeg")) {
+        if (formatName.toLowerCase().contains("jp")) {
             BufferedImage optimizedImage = createOptimizedImage(bufferedImage);
             saveWithCompression(optimizedImage, file, 0.9f);
         } else {
@@ -122,7 +145,7 @@ public class FileService {
     private void saveWithCompression(BufferedImage image, File file, float quality) throws IOException {
         String format = getFileExtension(file).toLowerCase();
 
-        if (format.equals("jpg") || format.equals("jpeg")) {
+        if (format.toLowerCase().contains("jp")) {
             Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
             if (writers.hasNext()) {
                 ImageWriter writer = writers.next();
@@ -152,8 +175,7 @@ public class FileService {
 
     private void setDefaultExtensionFromFile(File file) {
         String loadedExtension = getFileExtension(file);
-        if (loadedExtension.equals("jpg") || loadedExtension.equals("jpeg") ||
-                loadedExtension.equals("png") || loadedExtension.equals("bmp")) {
+        if (this.imagesAllowedExtensions.contains(loadedExtension)) {
             defaultExtension = loadedExtension;
         }
     }
