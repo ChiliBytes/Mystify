@@ -1,7 +1,8 @@
 package com.chilibytes.mystify.core.feature.blur;
 
+import com.chilibytes.mystify.common.service.ScriptProcessorService;
 import com.chilibytes.mystify.common.service.UndoService;
-import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
+import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 @Component
@@ -20,7 +22,11 @@ import java.util.stream.IntStream;
 public class BlurProcessor {
 
     private final UndoService undoService;
-    private final ApplicationOptionManagerService applicationOptionManagerService;
+    private final ScriptProcessorService scriptProcessorService;
+    private final ApplicationProperties applicationProperties;
+
+    private static final String PYTHON_BLUR_SCRIPT_FILE = "image-alpha/alpha.py";
+    private static final String PYTHON_BLUR_SCRIPT_NAME = "Blur";
 
     @Getter
     @Setter
@@ -148,5 +154,20 @@ public class BlurProcessor {
         }
 
         return (mouseY - offsetY) * scaleY;
+    }
+
+    public void blurEntirePicture(String pathToOriginalImage, String pathToProcessedImage,
+                                  String processedImageName, int blurLevel) {
+        List<String> commandArguments = List.of(
+                applicationProperties.getAppScriptsPythonVersion(),
+                applicationProperties.getAppScriptsPythonBasePath() + PYTHON_BLUR_SCRIPT_FILE,
+                pathToOriginalImage,
+                pathToProcessedImage + processedImageName + ".png",
+                "--blur",
+                String.valueOf(blurLevel)
+        );
+
+        ScriptProcessorService.ScriptComponents components = new ScriptProcessorService.ScriptComponents(PYTHON_BLUR_SCRIPT_NAME, commandArguments);
+        scriptProcessorService.executeScript(components);
     }
 }
