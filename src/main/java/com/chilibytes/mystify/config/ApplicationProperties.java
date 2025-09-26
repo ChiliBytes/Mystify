@@ -29,6 +29,12 @@ public class ApplicationProperties {
     @Value("${app.control.left-panel.button.style}")
     private String appControlLeftPanelButtonStyle;
 
+    @Value("${app.scripts.python.version}")
+    private String appScriptsPythonVersion;
+
+    @Value("${app.scripts.python.base.path}")
+    private String appScriptsPythonBasePath;
+
     @Value("${app.core.images.allowed.extensions:jpg,jpeg,png,JPG,JPEG,PNG}")
     private String[] allowedExtensions;
 
