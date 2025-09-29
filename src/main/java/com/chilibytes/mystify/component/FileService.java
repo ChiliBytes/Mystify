@@ -17,6 +17,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -177,6 +180,40 @@ public class FileService {
         String loadedExtension = getFileExtension(file);
         if (this.imagesAllowedExtensions.contains(loadedExtension)) {
             defaultExtension = loadedExtension;
+        }
+    }
+
+    public List<String> getAllImagesFromDirectory(String collagePath){
+        File dir = new File(collagePath);
+        List<String> imageList = new ArrayList<>();
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.out.println("Directory does not exists: " + collagePath);
+            return imageList;
+        }
+
+        File[] imageFiles = dir.listFiles((file, name) -> {
+            String lowerName = name.toLowerCase();
+            return lowerName.endsWith(".jpg") ||
+                    lowerName.endsWith(".jpeg") ||
+                    lowerName.endsWith(".png");
+        });
+
+        if (imageFiles != null) {
+                Arrays.sort(imageFiles, Comparator.comparing(File::getName,
+                    Comparator.comparingInt(FileService::extractNumber)));
+
+            for (File file : imageFiles) {
+                imageList.add(file.getName());
+            }
+        }
+        return imageList;
+    }
+    private static int extractNumber(String name) {
+        try {
+            String num = name.replaceAll("\\D+", "");
+            return num.isEmpty() ? 0 : Integer.parseInt(num);
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 }
