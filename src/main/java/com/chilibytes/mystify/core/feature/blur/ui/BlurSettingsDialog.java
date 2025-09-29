@@ -25,7 +25,7 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createStandardBu
 @Component
 @RequiredArgsConstructor
 public class BlurSettingsDialog {
-    private final ApplicationOptionManagerService applicationOptionManagerService;
+
     private final BlurEventHandlerService blurEventHandlerService;
 
     private Slider blurSlider;
@@ -40,15 +40,6 @@ public class BlurSettingsDialog {
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
     private static final String BLUR_SLIDER_LABEL = "Blur Level: ";
     private static final String BRUSH_SLIDER_LABEL = "Brush Size: ";
-
-
-    public void applyBlurDialogSettings() {
-        this.blurSlider.setValue(MystifyApplication.controlSettingsCache.getBlurLevel());
-        this.brushSlider.setValue(MystifyApplication.controlSettingsCache.getBrushSize());
-
-        this.blurLabel.setText("Radius: " + (int) this.blurSlider.getValue() + "px");
-        this.brushLabel.setText(BRUSH_SLIDER_LABEL + (int) this.brushSlider.getValue() + "px");
-    }
 
     public void showSettingsDialog() {
         Stage settingsStage = configureSettingsStage();
@@ -69,6 +60,14 @@ public class BlurSettingsDialog {
         Scene settingsScene = new Scene(layout);
         settingsStage.setScene(settingsScene);
         settingsStage.showAndWait();
+    }
+
+    public void applyBlurDialogSettings() {
+        this.blurSlider.setValue(MystifyApplication.controlSettingsCache.getBlurLevel());
+        this.brushSlider.setValue(MystifyApplication.controlSettingsCache.getBrushSize());
+
+        this.blurLabel.setText("Radius: " + (int) this.blurSlider.getValue() + "px");
+        this.brushLabel.setText(BRUSH_SLIDER_LABEL + (int) this.brushSlider.getValue() + "px");
     }
 
     private Stage configureSettingsStage() {
@@ -105,18 +104,18 @@ public class BlurSettingsDialog {
     }
 
     private void configureSceneControls() {
-        blurSlider = createSlider();
-        brushSlider = createSlider();
+        this.blurSlider = createSlider();
+        this.brushSlider = createSlider();
 
-        blurLabel = createLabel(BLUR_SLIDER_LABEL + (int) blurSlider.getValue());
-        brushLabel = createLabel(BRUSH_SLIDER_LABEL + (int) brushSlider.getValue());
+        this.blurLabel = createLabel(BLUR_SLIDER_LABEL + (int) this.blurSlider.getValue());
+        this.brushLabel = createLabel(BRUSH_SLIDER_LABEL + (int) this.brushSlider.getValue());
 
-        blurSlider.valueProperty().addListener((obs, oldVal, newVal) ->
-                blurLabel.setText(BLUR_SLIDER_LABEL + newVal.intValue()));
-        brushSlider.valueProperty().addListener((obs, oldVal, newVal) ->
-                brushLabel.setText(BRUSH_SLIDER_LABEL + newVal.intValue()));
+        this.blurSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                this. blurLabel.setText(BLUR_SLIDER_LABEL + newVal.intValue()));
+        this.brushSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+                this.brushLabel.setText(BRUSH_SLIDER_LABEL + newVal.intValue()));
 
-        acceptButton = createStandardButton("Save Settings");
-        cancelButton = createStandardButton("Cancel");
+        this.acceptButton = createStandardButton("Save Settings");
+        this.cancelButton = createStandardButton("Cancel");
     }
 }

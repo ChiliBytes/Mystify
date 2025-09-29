@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -119,15 +121,24 @@ public class UIControlCreator {
         return new Label(text);
     }
 
-    public static TextArea createRawTextArea(String text) {
+    public static TextArea createReadOnlyTextArea(String text) {
         TextArea textArea = new TextArea(text);
-        textArea.setEditable(false);
+        textArea.setEditable(Boolean.FALSE);
         textArea.setWrapText(true);
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMaxHeight(Double.MAX_VALUE);
         return textArea;
     }
 
+    public static TextArea createTextArea(String text) {
+        TextArea textArea = createReadOnlyTextArea(text);
+        textArea.setEditable(Boolean.TRUE);
+        textArea.setWrapText(true);
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMinHeight(30);
+         textArea.setMaxHeight(30);
+        return textArea;
+    }
     public static HBox createFooter(Slider zoomSlider) {
         HBox zoomContainer = new HBox(10, zoomSlider);
         zoomContainer.setAlignment(Pos.CENTER_RIGHT);
@@ -158,5 +169,16 @@ public class UIControlCreator {
         @Getter
         @Setter
         private static ApplicationProperties applicationProperties;
+    }
+
+    public static Stage createModalStage(String modalTitle, int width, int height){
+            Stage modalStage = new Stage();
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.setTitle(modalTitle);
+            modalStage.setMinWidth(width);
+            modalStage.setWidth(width);
+            modalStage.setMinHeight(height);
+            return modalStage;
+
     }
 }

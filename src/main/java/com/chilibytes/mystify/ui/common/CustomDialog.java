@@ -11,7 +11,7 @@ import java.io.StringWriter;
 import java.util.Optional;
 
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createRawLabel;
-import static com.chilibytes.mystify.ui.common.UIControlCreator.createRawTextArea;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createReadOnlyTextArea;
 
 public class CustomDialog {
 
@@ -51,7 +51,7 @@ public class CustomDialog {
             String exceptionText = sw.toString();
 
             Label label = createRawLabel("Error Details");
-            TextArea textArea = createRawTextArea(exceptionText);
+            TextArea textArea = createReadOnlyTextArea(exceptionText);
 
             GridPane.setVgrow(textArea, Priority.ALWAYS);
             GridPane.setHgrow(textArea, Priority.ALWAYS);
