@@ -136,9 +136,10 @@ public class UIControlCreator {
         textArea.setWrapText(true);
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMinHeight(30);
-         textArea.setMaxHeight(30);
+        textArea.setMaxHeight(30);
         return textArea;
     }
+
     public static HBox createFooter(Slider zoomSlider) {
         HBox zoomContainer = new HBox(10, zoomSlider);
         zoomContainer.setAlignment(Pos.CENTER_RIGHT);
@@ -171,14 +172,19 @@ public class UIControlCreator {
         private static ApplicationProperties applicationProperties;
     }
 
-    public static Stage createModalStage(String modalTitle, int width, int height){
-            Stage modalStage = new Stage();
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.setTitle(modalTitle);
-            modalStage.setMinWidth(width);
-            modalStage.setWidth(width);
-            modalStage.setMinHeight(height);
-            return modalStage;
+    public static Stage createModalStage(String modalTitle, int width, int height) {
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle(modalTitle);
+        modalStage.setMinWidth(width);
+        modalStage.setWidth(width);
+        modalStage.setMinHeight(height);
+        return modalStage;
+
+    }
+
+    public static Stage createModalStage(String modalTitle) {
+        return createModalStage(modalTitle, 850, 320);
 
     }
 }

@@ -3,6 +3,7 @@ package com.chilibytes.mystify.core.feature.collage.service;
 import com.chilibytes.mystify.core.feature.collage.CollageMaker;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -20,19 +21,16 @@ public class CollageEventHandlerService {
 
     private final CollageMaker collageMaker;
 
-    private String selectedInputFolderPath;
-    private String selectedOutputFolderPath;
-
     private static final String PATH_DELIMITER = "/";
 
-    public record CollageDialogControls(Button createButton, Button cancelButton,
-                                        Button selectInputFolder, TextArea inputFolderPath,
-                                        Button selectOutputFolder, TextArea outputFolderPath, TextArea collageName) {
+    public record CollageDialogControls(Button btnSelectInputFolder, Button btnSelectOutputFolder,
+                                        TextArea txtInputFolderPath, TextArea txtOutputFolderPath,
+                                        Label lblCollageName, TextArea txtCollageName,
+                                        Button btnCreate, Button btnCancel) {
     }
 
-
     public void handleOpenCollageStage(CollageDialog collageDialog) {
-        collageDialog.showCollageDialog();
+        collageDialog.showDialog();
     }
 
     private DirectoryChooser createFolderChooser(String chooserText) {
@@ -41,30 +39,30 @@ public class CollageEventHandlerService {
         return directoryChooser;
     }
 
-    public void setupEventHandlers(Stage stage, CollageDialogControls collageDialogButtons) {
+    public void setupEventHandlers(Stage stage, CollageDialogControls collageDialogControls) {
 
-        collageDialogButtons.selectInputFolder.setOnAction(e -> {
+        collageDialogControls.btnSelectInputFolder.setOnAction(e -> {
             DirectoryChooser folderChooser = createFolderChooser("Select Input Folder");
             File selectedFolder = folderChooser.showDialog(stage);
             if (selectedFolder != null) {
-                this.selectedInputFolderPath = selectedFolder.getAbsolutePath() + PATH_DELIMITER;
-                collageDialogButtons.inputFolderPath.setText(this.selectedInputFolderPath);
+                String selectedInputFolderPath = selectedFolder.getAbsolutePath() + PATH_DELIMITER;
+                collageDialogControls.txtInputFolderPath.setText(selectedInputFolderPath);
             }
         });
 
-        collageDialogButtons.selectOutputFolder.setOnAction(e -> {
+        collageDialogControls.btnSelectOutputFolder.setOnAction(e -> {
             DirectoryChooser folderChooser = createFolderChooser("Select Output Folder");
             File selectedFolder = folderChooser.showDialog(stage);
             if (selectedFolder != null) {
-                this.selectedOutputFolderPath = selectedFolder.getAbsolutePath() + PATH_DELIMITER;
-                collageDialogButtons.outputFolderPath.setText(this.selectedOutputFolderPath);
+                String selectedOutputFolderPath = selectedFolder.getAbsolutePath() + PATH_DELIMITER;
+                collageDialogControls.txtOutputFolderPath.setText(selectedOutputFolderPath);
             }
         });
 
-        collageDialogButtons.createButton.setOnAction(e -> collageMaker.createCollage(collageDialogButtons.inputFolderPath.getText(),
-                collageDialogButtons.outputFolderPath.getText(),
-                collageDialogButtons.collageName.getText()));
+        collageDialogControls.btnCreate.setOnAction(e -> collageMaker.createCollage(collageDialogControls.txtInputFolderPath.getText(),
+                collageDialogControls.txtOutputFolderPath.getText(),
+                collageDialogControls.txtCollageName.getText()));
 
-        collageDialogButtons.cancelButton.setOnAction(e -> stage.close());
+        collageDialogControls.btnCancel.setOnAction(e -> stage.close());
     }
 }
