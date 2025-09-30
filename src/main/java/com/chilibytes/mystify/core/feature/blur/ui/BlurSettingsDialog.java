@@ -1,6 +1,5 @@
 package com.chilibytes.mystify.core.feature.blur.ui;
 
-import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.core.feature.blur.service.BlurEventHandlerService;
 import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.geometry.Insets;
@@ -111,7 +110,7 @@ public class BlurSettingsDialog {
         this.brushLabel = createLabel(BRUSH_SLIDER_LABEL + (int) this.brushSlider.getValue());
 
         this.blurSlider.valueProperty().addListener((obs, oldVal, newVal) ->
-                this. blurLabel.setText(BLUR_SLIDER_LABEL + newVal.intValue()));
+                this.blurLabel.setText(BLUR_SLIDER_LABEL + newVal.intValue()));
         this.brushSlider.valueProperty().addListener((obs, oldVal, newVal) ->
                 this.brushLabel.setText(BRUSH_SLIDER_LABEL + newVal.intValue()));
 
