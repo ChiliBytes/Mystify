@@ -5,6 +5,8 @@ import com.chilibytes.mystify.core.feature.blur.service.BlurEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.BlurSettingsDialog;
 import com.chilibytes.mystify.core.feature.collage.service.CollageEventHandlerService;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
+import com.chilibytes.mystify.core.feature.pdf.service.PdfEventHandlerService;
+import com.chilibytes.mystify.core.feature.pdf.ui.PdfMakerDialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @RequiredArgsConstructor
 public class MenuBarBuilder {
@@ -24,6 +27,8 @@ public class MenuBarBuilder {
     private final BlurSettingsDialog blurSettingsDialog;
     private final CollageEventHandlerService collageEventHandlerService;
     private final CollageDialog collageDialog;
+    private final PdfEventHandlerService pdfEventHandlerService;
+    private final PdfMakerDialog pdfMakerDialog;
 
     @Getter
     @Setter
@@ -56,12 +61,14 @@ public class MenuBarBuilder {
         Menu blurMenu = new Menu("Image Filters");
         blurMenu.getItems().add(blurItem);
 
-
         MenuItem collageItem = new MenuItem("Create Collage");
         collageItem.setOnAction(e -> collageEventHandlerService.handleOpenCollageStage(collageDialog));
 
+        MenuItem images2PdfItem = new MenuItem("Images to PDF");
+        images2PdfItem.setOnAction(e -> pdfEventHandlerService.handleOpenCollageStage(pdfMakerDialog));
+
         Menu collageMenu = new Menu("Image Creation");
-        collageMenu.getItems().add(collageItem);
+        collageMenu.getItems().addAll(collageItem, images2PdfItem);
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu);
