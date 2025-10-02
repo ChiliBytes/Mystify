@@ -187,4 +187,10 @@ public class UIControlCreator {
         return createModalStage(modalTitle, 850, 320);
 
     }
+
+    public static VBox createVbox(Node... nodes){
+        VBox dialogGroup = new VBox(5, nodes);
+        dialogGroup.setAlignment(Pos.CENTER_LEFT);
+        return  dialogGroup;
+    }
 }
