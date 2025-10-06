@@ -26,7 +26,7 @@ def get_image_files(folder_path):
     
     return image_files
 
-def create_video_from_images(input_folder, output_folder, transition_seconds, fps=30):
+def create_video_from_images(input_folder, output_folder,video_name ,transition_seconds, fps=30):
     """Create MP4 video from images with specified transition time."""
     
     # Get all image files
@@ -42,7 +42,7 @@ def create_video_from_images(input_folder, output_folder, transition_seconds, fp
     os.makedirs(output_folder, exist_ok=True)
     
     # Generate output filename
-    output_path = Path(output_folder) / "output_video.mp4"
+    output_path = Path(output_folder) / video_name
     
     # Read first image to get dimensions
     first_image = cv2.imread(image_files[0])
@@ -118,6 +118,7 @@ def main():
     parser = argparse.ArgumentParser(description='Create MP4 video from images in a folder')
     parser.add_argument('input_folder', help='Folder containing input images')
     parser.add_argument('output_folder', help='Output folder for the video')
+    parser.add_argument('video_name', help='Name of the resulting video')
     parser.add_argument('transition_seconds', type=float, 
                        help='Seconds between each image transition')
     
@@ -136,7 +137,8 @@ def main():
     # Create video
     success = create_video_from_images(
         args.input_folder, 
-        args.output_folder, 
+        args.output_folder,
+        args.video_name,
         args.transition_seconds
     )
     

@@ -1,7 +1,6 @@
-package com.chilibytes.mystify.common.service;
+package com.chilibytes.mystify.general.service;
 
-import com.chilibytes.mystify.component.FileService;
-import com.chilibytes.mystify.core.feature.blur.BlurProcessor;
+import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
 import com.chilibytes.mystify.core.service.ImageService;
 import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.control.Button;
@@ -22,7 +21,7 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
 @Service
 public class CommonEventHandlerService {
 
-    private final BlurProcessor blurProcessor;
+    private final BlurProcessorService blurProcessorService;
     private final ZoomService zoomService;
     private final FileService fileService;
     private final ImageService imageService;
@@ -53,10 +52,10 @@ public class CommonEventHandlerService {
         commonApplicationButtons.clearButton.setOnAction(e -> handleClearImage());
         commonApplicationButtons.undoButton.setOnAction(e -> handleUndo());
 
-        imageView.setOnMouseDragged(e -> blurProcessor.handleApplyBlur(e, this.currentImage, this.imageView));
-        imageView.setOnMouseClicked(e -> blurProcessor.handleApplyBlur(e, this.currentImage, this.imageView));
-        imageView.setOnMouseReleased(e -> blurProcessor.setDragging(Boolean.FALSE));
-        imageView.setOnMouseExited(e -> blurProcessor.setDragging(Boolean.FALSE));
+        imageView.setOnMouseDragged(e -> blurProcessorService.handleApplyBlur(e, this.currentImage, this.imageView));
+        imageView.setOnMouseClicked(e -> blurProcessorService.handleApplyBlur(e, this.currentImage, this.imageView));
+        imageView.setOnMouseReleased(e -> blurProcessorService.setDragging(Boolean.FALSE));
+        imageView.setOnMouseExited(e -> blurProcessorService.setDragging(Boolean.FALSE));
 
         commonApplicationControls.outerZoomSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double zoomLevel = newVal.doubleValue() / 100.0;
@@ -107,7 +106,7 @@ public class CommonEventHandlerService {
     public void handleClearImage() {
         if (currentImage != null) {
             undoService.saveState(currentImage);
-            currentImage = blurProcessor.createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
+            currentImage = blurProcessorService.createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
             setCurrentImage(currentImage);
             imageView.setImage(currentImage);
         }

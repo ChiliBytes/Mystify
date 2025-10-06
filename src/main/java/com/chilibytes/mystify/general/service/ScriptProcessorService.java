@@ -1,4 +1,4 @@
-package com.chilibytes.mystify.common.service;
+package com.chilibytes.mystify.general.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

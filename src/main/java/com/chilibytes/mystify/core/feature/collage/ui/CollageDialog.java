@@ -1,43 +1,79 @@
 package com.chilibytes.mystify.core.feature.collage.ui;
 
-import com.chilibytes.mystify.core.feature.BaseFeatureDialog;
+
+import com.chilibytes.mystify.core.BaseDialog;
 import com.chilibytes.mystify.core.feature.collage.service.CollageEventHandlerService;
-import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createLabel;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createStandardButton;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createTextArea;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createVbox;
 
 @Slf4j
 @Component
 @Getter
-public class CollageDialog extends BaseFeatureDialog<CollageEventHandlerService, CollageEventHandlerService.CollageDialogControls> {
+@RequiredArgsConstructor
+public class CollageDialog extends BaseDialog {
 
-    private final String createButtonText = "Create Collage";
-    private final String fileNameLabel = "Collage Name";
-    private final String dialogTitle = "Collage Maker";
-    private final String selectButtonText = "Select source images folder";
+    private final CollageEventHandlerService collageEventHandlerService;
 
-    public CollageDialog(CollageEventHandlerService collageEventHandlerService) {
-        super(collageEventHandlerService);
+    private Button btnInputFolder;
+    private TextArea txtInputFolder;
+
+    private Button btnOutputFolder;
+    private TextArea txtOutputFolder;
+
+    private Label lblResultingFileName;
+    private TextArea txtResultingFileName;
+
+
+    @Override
+    public void configureDialogControls() {
+        this.btnInputFolder = createStandardButton("Select Input Folder");
+        this.txtInputFolder = createTextArea("");
+
+        this.btnOutputFolder = createStandardButton("Select Output Folder");
+        this.txtOutputFolder = createTextArea("");
+
+        this.lblResultingFileName = createLabel("Collage Name");
+        this.txtResultingFileName = createTextArea("");
+
+        this.getBtnOk().setText("Create Collage");
+
     }
 
     @Override
-    protected CollageEventHandlerService.CollageDialogControls createControls() {
-        return new CollageEventHandlerService.CollageDialogControls(
-                btnSelectInputFolder,
-                btnSelectOutputFolder,
-                txtInputFolderPath,
-                txtOutputFolderPath,
-                lblFileName,
-                txtFileName,
-                btnCreate,
-                btnCancel
+    public List<VBox> configureDialogLayout() {
+        return List.of(
+                createVbox(this.btnInputFolder, this.txtInputFolder),
+                createVbox(this.btnOutputFolder, this.txtOutputFolder),
+                createVbox(this.lblResultingFileName, this.txtResultingFileName)
         );
     }
 
     @Override
-    protected void configureEventHandlers(Stage collageStage) {
-        CollageEventHandlerService.CollageDialogControls collageControls = createControls();
-        eventHandlerService.setupEventHandlers(collageStage, collageControls);
+    public void showDialog() {
+        this.displayModal("Collage Maker", "Create a New Collage");
+    }
+
+    @Override
+    public void configureEventHandlers() {
+        CollageEventHandlerService.CollageDialogControls controls = new CollageEventHandlerService.CollageDialogControls(
+                this.btnInputFolder, this.txtInputFolder,
+                this.btnOutputFolder, this.txtOutputFolder,
+                this.lblResultingFileName, this.txtResultingFileName,
+                this.getBtnOk(), this.getBtnCancel()
+        );
+        collageEventHandlerService.setupEventHandlers(this.getStage(), controls);
     }
 }

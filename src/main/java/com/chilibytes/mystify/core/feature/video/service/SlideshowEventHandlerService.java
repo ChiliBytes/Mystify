@@ -7,21 +7,25 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.Optional;
 
-@Component
+@Service
 @Slf4j
 @RequiredArgsConstructor
-public class SlideshowEventHandler {
+public class SlideshowEventHandlerService {
+
+    private final SlideshowService slideshowService;
 
     private static final String PATH_DELIMITER = "/";
 
     public record SlideshowControls(Button btnInputFolder, TextArea txtInputFolder,
                                     Button btnOutputFolder, TextArea txtOutputFolder,
-                                    Label lblVideoFileName, TextArea txtVideoFileName) {
+                                    Label lblSecondsBetween, TextArea txtSecondsBetween,
+                                    Label lblVideoFileName, TextArea txtVideoFileName,
+                                    Button btnCreate, Button btnCancel) {
 
     }
 
@@ -43,6 +47,13 @@ public class SlideshowEventHandler {
                 controls.txtOutputFolder.setText(selectedFolderPath);
             });
         });
+
+        controls.btnCreate.setOnAction(e -> slideshowService.createSlideShow(
+                controls.txtInputFolder.getText(),
+                controls.txtOutputFolder.getText(),
+                controls.txtVideoFileName.getText(),
+                Float.parseFloat(controls.txtSecondsBetween.getText())));
+
     }
 
     private DirectoryChooser createFolderChooser(String chooserText) {

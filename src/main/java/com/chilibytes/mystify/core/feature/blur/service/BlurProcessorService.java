@@ -1,8 +1,9 @@
-package com.chilibytes.mystify.core.feature.blur;
+package com.chilibytes.mystify.core.feature.blur.service;
 
-import com.chilibytes.mystify.common.service.ScriptProcessorService;
-import com.chilibytes.mystify.common.service.UndoService;
+import com.chilibytes.mystify.general.service.ScriptProcessorService;
+import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.config.ApplicationProperties;
+import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -11,22 +12,24 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-@Component
+@Service
 @Slf4j
 @RequiredArgsConstructor
-public class BlurProcessor {
+public class BlurProcessorService {
 
     private final UndoService undoService;
     private final ScriptProcessorService scriptProcessorService;
     private final ApplicationProperties applicationProperties;
+    private final ApplicationOptionManagerService applicationOptionManagerService;
 
     private static final String PYTHON_BLUR_SCRIPT_FILE = "image-alpha/alpha.py";
     private static final String PYTHON_BLUR_SCRIPT_NAME = "Blur";
+    private static final String BRUSH_SLIDER_LABEL = "Brush Size: ";
 
     @Getter
     @Setter
@@ -154,6 +157,29 @@ public class BlurProcessor {
         }
 
         return (mouseY - offsetY) * scaleY;
+    }
+
+    public void saveBlurSettings(BlurEventHandlerService.BlurDialogControls blurDialogControls) {
+
+
+        int blurRadius = (int) blurDialogControls.sldBlur().getValue();
+        int brushSize = (int) blurDialogControls.sldBrush().getValue();
+
+        blurDialogControls.sldBlur().setValue(blurRadius);
+        blurDialogControls.sldBrush().setValue(brushSize);
+
+        blurDialogControls.lblBlur().setText("Radius: " + blurRadius + "px");
+        blurDialogControls.lblBrush().setText(BRUSH_SLIDER_LABEL + brushSize + "px");
+
+        applicationOptionManagerService.saveSettings(blurRadius, brushSize);
+    }
+
+    public void applyBlurDialogSettings(BlurEventHandlerService.BlurDialogControls blurDialogControls) {
+        blurDialogControls.sldBlur().setValue(MystifyApplication.controlSettingsCache.getBlurLevel());
+        blurDialogControls.sldBrush().setValue(MystifyApplication.controlSettingsCache.getBrushSize());
+
+        blurDialogControls.lblBlur().setText("Radius: " + (int) blurDialogControls.sldBlur().getValue() + "px");
+        blurDialogControls.lblBrush().setText(BRUSH_SLIDER_LABEL + (int) blurDialogControls.sldBrush().getValue() + "px");
     }
 
     public void blurEntirePicture(String pathToOriginalImage, String pathToProcessedImage,

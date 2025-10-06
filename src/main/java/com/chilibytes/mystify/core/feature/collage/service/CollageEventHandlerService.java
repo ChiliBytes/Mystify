@@ -1,7 +1,5 @@
 package com.chilibytes.mystify.core.feature.collage.service;
 
-import com.chilibytes.mystify.core.feature.collage.CollageMaker;
-import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -13,24 +11,19 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CollageEventHandlerService {
 
-    private final CollageMaker collageMaker;
+    private final CollageMakerService collageMakerService;
 
     private static final String PATH_DELIMITER = "/";
 
-    public record CollageDialogControls(Button btnSelectInputFolder, Button btnSelectOutputFolder,
-                                        TextArea txtInputFolderPath, TextArea txtOutputFolderPath,
+    public record CollageDialogControls(Button btnSelectInputFolder, TextArea txtInputFolderPath
+            , Button btnSelectOutputFolder, TextArea txtOutputFolderPath,
                                         Label lblCollageName, TextArea txtCollageName,
                                         Button btnCreate, Button btnCancel) {
-    }
-
-    public void handleOpenCollageStage(CollageDialog collageDialog) {
-        collageDialog.showDialog();
     }
 
     private DirectoryChooser createFolderChooser(String chooserText) {
@@ -59,7 +52,7 @@ public class CollageEventHandlerService {
             }
         });
 
-        collageDialogControls.btnCreate.setOnAction(e -> collageMaker.createCollage(collageDialogControls.txtInputFolderPath.getText(),
+        collageDialogControls.btnCreate.setOnAction(e -> collageMakerService.createCollage(collageDialogControls.txtInputFolderPath.getText(),
                 collageDialogControls.txtOutputFolderPath.getText(),
                 collageDialogControls.txtCollageName.getText()));
 

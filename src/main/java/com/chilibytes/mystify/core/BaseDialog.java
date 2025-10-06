@@ -24,20 +24,21 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createStandardBu
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Getter
 public abstract class BaseDialog {
 
-    private Button btnCreate;
-    private Button btnCancel;
 
-    @Getter
+    private Button btnOk;
+    private Button btnCancel;
     private Stage stage;
 
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
 
     public void displayModal(String windowTitle, String dialogTitle) {
+
+        configureFooterButtons();
         this.configureDialogControls();
         Stage dialogStage = createModalStage(windowTitle, 850, 320);
-        configureFooterButtons();
 
         this.stage = dialogStage;
         this.configureEventHandlers();
@@ -57,7 +58,7 @@ public abstract class BaseDialog {
     }
 
     private void configureFooterButtons() {
-        this.btnCreate = createStandardButton("Ok");
+        this.btnOk = createStandardButton("Ok");
         this.btnCancel = createStandardButton("Cancel");
     }
 
@@ -74,7 +75,7 @@ public abstract class BaseDialog {
         layout.setStyle(CONTROLS_COLOR_STYLE);
         layout.setAlignment(Pos.CENTER);
 
-        HBox footerButtonsBox = configureFooterLayout(this.btnCreate, this.btnCancel);
+        HBox footerButtonsBox = configureFooterLayout(this.btnOk, this.btnCancel);
         Label dialogLabel = createLabel(dialogTitle);
 
         List<Node> dialogNodes = new ArrayList<>();

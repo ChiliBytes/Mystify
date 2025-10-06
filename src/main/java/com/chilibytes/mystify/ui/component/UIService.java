@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.ui.component;
 
-import com.chilibytes.mystify.common.service.CommonEventHandlerService;
-import com.chilibytes.mystify.common.service.ZoomService;
+import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.ZoomService;
 import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.common.UIControlCreator;

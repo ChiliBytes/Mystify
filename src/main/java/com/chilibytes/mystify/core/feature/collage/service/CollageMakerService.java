@@ -1,11 +1,11 @@
-package com.chilibytes.mystify.core.feature.collage;
+package com.chilibytes.mystify.core.feature.collage.service;
 
-import com.chilibytes.mystify.common.service.ScriptProcessorService;
-import com.chilibytes.mystify.component.FileService;
+import com.chilibytes.mystify.general.service.ScriptProcessorService;
+import com.chilibytes.mystify.general.service.FileService;
 import com.chilibytes.mystify.config.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,10 +24,10 @@ import java.util.stream.Stream;
 import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
 
-@Component
+@Service
 @Slf4j
 @RequiredArgsConstructor
-public class CollageMaker {
+public class CollageMakerService {
 
     private final ScriptProcessorService scriptProcessorService;
     private final ApplicationProperties applicationProperties;
@@ -90,9 +90,9 @@ public class CollageMaker {
                 createBulkCollage(inputFolder, outputFolder, collagePrefix);
             }
             showSuccess("Collage created successfully!");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             log.error("Error on createCollage(): {}", ex.getMessage(), ex);
-            showError("Error","The requested collage could not be created", ex);
+            showError("Error", "The requested collage could not be created", ex);
         }
 
     }

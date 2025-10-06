@@ -1,4 +1,4 @@
-package com.chilibytes.mystify.component;
+package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.config.ApplicationProperties;
 import jakarta.annotation.PostConstruct;

@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.core.feature.video.ui;
 
 import com.chilibytes.mystify.core.BaseDialog;
-import com.chilibytes.mystify.core.feature.video.service.SlideshowEventHandler;
+import com.chilibytes.mystify.core.feature.video.service.SlideshowEventHandlerService;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -21,13 +21,16 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createVbox;
 @Slf4j
 @RequiredArgsConstructor
 public class SlideshowDialog extends BaseDialog {
-    private final SlideshowEventHandler slideshowEventHandler;
+    private final SlideshowEventHandlerService slideshowEventHandlerService;
 
     private Button btnInputFolder;
     private TextArea txtInputFolder;
 
     private Button btnOutputFolder;
     private TextArea txtOutputFolder;
+
+    private Label lblSecondsBetween;
+    private TextArea txtSecondsBetween;
 
     private Label lblVideoFileName;
     private TextArea txtVideoFileName;
@@ -40,8 +43,13 @@ public class SlideshowDialog extends BaseDialog {
         this.btnOutputFolder = createStandardButton("Select Output Folder");
         this.txtOutputFolder = createTextArea("");
 
+        this.lblSecondsBetween = createLabel("Seconds between images");
+        this.txtSecondsBetween = createTextArea("");
+
         this.lblVideoFileName = createLabel("Resulting video file name");
         this.txtVideoFileName = createTextArea("");
+
+        this.getBtnOk().setText("Create Slideshow");
     }
 
     @Override
@@ -49,6 +57,7 @@ public class SlideshowDialog extends BaseDialog {
         return List.of(
                 createVbox(this.btnInputFolder, this.txtInputFolder),
                 createVbox(this.btnOutputFolder, this.txtOutputFolder),
+                createVbox(this.lblSecondsBetween, this.txtSecondsBetween),
                 createVbox(this.lblVideoFileName, this.txtVideoFileName)
         );
     }
@@ -60,11 +69,13 @@ public class SlideshowDialog extends BaseDialog {
 
     @Override
     public void configureEventHandlers() {
-        SlideshowEventHandler.SlideshowControls controls = new SlideshowEventHandler.SlideshowControls(
-                btnInputFolder, txtInputFolder,
-                btnOutputFolder, txtOutputFolder,
-                lblVideoFileName, txtVideoFileName
+        SlideshowEventHandlerService.SlideshowControls controls = new SlideshowEventHandlerService.SlideshowControls(
+                this.btnInputFolder, this.txtInputFolder,
+                this.btnOutputFolder, this.txtOutputFolder,
+                this.lblSecondsBetween, this.txtSecondsBetween,
+                this.lblVideoFileName, this.txtVideoFileName,
+                this.getBtnOk(), this.getBtnCancel()
         );
-        slideshowEventHandler.configureEventHandlers(this.getStage(), controls);
+        slideshowEventHandlerService.configureEventHandlers(this.getStage(), controls);
     }
 }
