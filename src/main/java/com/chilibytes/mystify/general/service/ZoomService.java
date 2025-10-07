@@ -1,4 +1,4 @@
-package com.chilibytes.mystify.common.service;
+package com.chilibytes.mystify.general.service;
 
 import javafx.scene.image.ImageView;
 import lombok.Getter;

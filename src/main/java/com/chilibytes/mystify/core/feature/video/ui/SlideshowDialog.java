@@ -1,13 +1,11 @@
-package com.chilibytes.mystify.core.feature.collage.ui;
-
+package com.chilibytes.mystify.core.feature.video.ui;
 
 import com.chilibytes.mystify.core.BaseDialog;
-import com.chilibytes.mystify.core.feature.collage.service.CollageEventHandlerService;
+import com.chilibytes.mystify.core.feature.video.service.SlideshowEventHandlerService;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,13 +17,11 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createStandardBu
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createTextArea;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createVbox;
 
-@Slf4j
 @Component
-@Getter
+@Slf4j
 @RequiredArgsConstructor
-public class CollageDialog extends BaseDialog {
-
-    private final CollageEventHandlerService collageEventHandlerService;
+public class SlideshowDialog extends BaseDialog {
+    private final SlideshowEventHandlerService slideshowEventHandlerService;
 
     private Button btnInputFolder;
     private TextArea txtInputFolder;
@@ -33,9 +29,11 @@ public class CollageDialog extends BaseDialog {
     private Button btnOutputFolder;
     private TextArea txtOutputFolder;
 
-    private Label lblResultingFileName;
-    private TextArea txtResultingFileName;
+    private Label lblSecondsBetween;
+    private TextArea txtSecondsBetween;
 
+    private Label lblVideoFileName;
+    private TextArea txtVideoFileName;
 
     @Override
     public void configureDialogControls() {
@@ -45,11 +43,13 @@ public class CollageDialog extends BaseDialog {
         this.btnOutputFolder = createStandardButton("Select Output Folder");
         this.txtOutputFolder = createTextArea("");
 
-        this.lblResultingFileName = createLabel("Collage Name");
-        this.txtResultingFileName = createTextArea("");
+        this.lblSecondsBetween = createLabel("Seconds between images");
+        this.txtSecondsBetween = createTextArea("");
 
-        this.getBtnOk().setText("Create Collage");
+        this.lblVideoFileName = createLabel("Resulting video file name");
+        this.txtVideoFileName = createTextArea("");
 
+        this.getBtnOk().setText("Create Slideshow");
     }
 
     @Override
@@ -57,23 +57,25 @@ public class CollageDialog extends BaseDialog {
         return List.of(
                 createVbox(this.btnInputFolder, this.txtInputFolder),
                 createVbox(this.btnOutputFolder, this.txtOutputFolder),
-                createVbox(this.lblResultingFileName, this.txtResultingFileName)
+                createVbox(this.lblSecondsBetween, this.txtSecondsBetween),
+                createVbox(this.lblVideoFileName, this.txtVideoFileName)
         );
     }
 
     @Override
     public void showDialog() {
-        this.displayModal("Collage Maker", "Create a New Collage");
+        this.displayModal("Slideshow", "Slideshow creator from images");
     }
 
     @Override
     public void configureEventHandlers() {
-        CollageEventHandlerService.CollageDialogControls controls = new CollageEventHandlerService.CollageDialogControls(
+        SlideshowEventHandlerService.SlideshowControls controls = new SlideshowEventHandlerService.SlideshowControls(
                 this.btnInputFolder, this.txtInputFolder,
                 this.btnOutputFolder, this.txtOutputFolder,
-                this.lblResultingFileName, this.txtResultingFileName,
+                this.lblSecondsBetween, this.txtSecondsBetween,
+                this.lblVideoFileName, this.txtVideoFileName,
                 this.getBtnOk(), this.getBtnCancel()
         );
-        collageEventHandlerService.setupEventHandlers(this.getStage(), controls);
+        slideshowEventHandlerService.configureEventHandlers(this.getStage(), controls);
     }
 }

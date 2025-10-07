@@ -1,12 +1,11 @@
 package com.chilibytes.mystify.ui.component;
 
-import com.chilibytes.mystify.common.service.CommonEventHandlerService;
-import com.chilibytes.mystify.core.feature.blur.service.BlurEventHandlerService;
-import com.chilibytes.mystify.core.feature.blur.ui.BlurSettingsDialog;
-import com.chilibytes.mystify.core.feature.collage.service.CollageEventHandlerService;
+import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
+import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
-import com.chilibytes.mystify.core.feature.pdf.service.PdfEventHandlerService;
 import com.chilibytes.mystify.core.feature.pdf.ui.PdfMakerDialog;
+import com.chilibytes.mystify.core.feature.video.ui.SlideshowDialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -23,12 +22,11 @@ import org.springframework.stereotype.Component;
 public class MenuBarBuilder {
 
     private final CommonEventHandlerService commonEventHandlerService;
-    private final BlurEventHandlerService blurEventHandlerService;
-    private final BlurSettingsDialog blurSettingsDialog;
-    private final CollageEventHandlerService collageEventHandlerService;
+    private final CustomBlurDialog customBlurDialog;
     private final CollageDialog collageDialog;
-    private final PdfEventHandlerService pdfEventHandlerService;
     private final PdfMakerDialog pdfMakerDialog;
+    private final SlideshowDialog slideshowDialog;
+    private final AutoBlurDialog autoBlurDialog;
 
     @Getter
     @Setter
@@ -54,24 +52,34 @@ public class MenuBarBuilder {
         Menu editMenu = new Menu("Edit");
         editMenu.getItems().addAll(resetImageItem, clearImageItem);
 
+        MenuItem customBlurItem = new MenuItem("Custom Blur");
+        customBlurItem.setOnAction(e -> customBlurDialog.showDialog());
 
-        MenuItem blurItem = new MenuItem("Blur Effect");
-        blurItem.setOnAction(e -> blurEventHandlerService.handleOpenBlurSettings(blurSettingsDialog));
+        MenuItem autoBlurItem = new MenuItem("Automatic Blur");
+        autoBlurItem.setOnAction(e -> autoBlurDialog.showDialog());
 
         Menu blurMenu = new Menu("Image Filters");
-        blurMenu.getItems().add(blurItem);
+        blurMenu.getItems().addAll(customBlurItem, autoBlurItem);
 
         MenuItem collageItem = new MenuItem("Create Collage");
-        collageItem.setOnAction(e -> collageEventHandlerService.handleOpenCollageStage(collageDialog));
+        collageItem.setOnAction(e -> collageDialog.showDialog());
 
         MenuItem images2PdfItem = new MenuItem("Images to PDF");
-        images2PdfItem.setOnAction(e -> pdfEventHandlerService.handleOpenCollageStage(pdfMakerDialog));
+        images2PdfItem.setOnAction(e -> pdfMakerDialog.showDialog());
 
         Menu collageMenu = new Menu("Image Creation");
         collageMenu.getItems().addAll(collageItem, images2PdfItem);
 
+
+        MenuItem slideshowsItem = new MenuItem("Create SlideShows");
+        slideshowsItem.setOnAction(e -> slideshowDialog.showDialog());
+
+        Menu slideshowMenu = new Menu("Video");
+        slideshowMenu.getItems().add(slideshowsItem);
+
+
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu, slideshowMenu);
         menuBar.useSystemMenuBarProperty().set(false);
 
         return menuBar;

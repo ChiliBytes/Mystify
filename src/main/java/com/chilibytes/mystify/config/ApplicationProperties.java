@@ -35,6 +35,12 @@ public class ApplicationProperties {
     @Value("${app.scripts.python.base.path}")
     private String appScriptsPythonBasePath;
 
+    @Value("${app.workspace.default.input:/opt/mystify/}")
+    private String appWorkspaceDefaultInput;
+
+    @Value("${app.workspace.default.output:/opt/mystify/}")
+    private String appWorkspaceDefaultOutput;
+
     @Value("${app.core.images.allowed.extensions:jpg,jpeg,png,JPG,JPEG,PNG}")
     private String[] allowedExtensions;
 

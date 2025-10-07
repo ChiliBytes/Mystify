@@ -1,9 +1,9 @@
 package com.chilibytes.mystify.ui.component;
 
-import com.chilibytes.mystify.common.service.CommonEventHandlerService;
-import com.chilibytes.mystify.common.service.ZoomService;
+import com.chilibytes.mystify.core.feature.textoverlay.service.TextOverlayEventHandlerService;
+import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.ZoomService;
 import com.chilibytes.mystify.config.ApplicationProperties;
-import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.common.UIControlCreator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.scene.Scene;
@@ -26,18 +26,17 @@ import org.springframework.stereotype.Service;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createImageView;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createScrollPane;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UIService {
 
     private final ZoomService zoomService;
-    private final ApplicationOptionManagerService applicationOptionManagerService;
     private final ApplicationProperties applicationProperties;
     private final PrincipalLayoutsBuilder principalLayoutsBuilder;
     private final MenuBarBuilder menuBarBuilder;
     private final CommonEventHandlerService commonEventHandlerService;
+    private final TextOverlayEventHandlerService textOverlayEventHandlerService;
 
     private ImageView imageView;
 
@@ -48,6 +47,7 @@ public class UIService {
     Button resetButton;
     Button clearButton;
     Button undoButton;
+    Button btnTextOverlay;
 
     public void initializeUI(Stage primaryStage) {
         log.info("Initializing App UI ...");
@@ -72,6 +72,11 @@ public class UIService {
 
         commonEventHandlerService.setupEventHandlers(primaryStage, commonApplicationButtons, commonApplicationControls);
 
+        TextOverlayEventHandlerService.TextOverlayControls textOverlayControls = new TextOverlayEventHandlerService.TextOverlayControls(this.btnTextOverlay,
+                this.commonEventHandlerService);
+
+        textOverlayEventHandlerService.setupEventHandlers(textOverlayControls);
+
         applySettingsToControls();
     }
 
@@ -81,9 +86,9 @@ public class UIService {
         this.resetButton = UIControlCreator.createIconButton(FontAwesomeIcon.REFRESH, "Reset Image");
         this.clearButton = UIControlCreator.createIconButton(FontAwesomeIcon.ERASER, "Clear Image");
         this.undoButton = UIControlCreator.createIconButton(FontAwesomeIcon.UNDO, "Undo");
+        this.btnTextOverlay = UIControlCreator.createIconButton(FontAwesomeIcon.FILE_WORD_ALT, "Text Overlay");
         undoButton.setDisable(true);
-        return principalLayoutsBuilder.createLeftControlsPanel(loadButton, saveButton, resetButton, clearButton, undoButton);
-
+        return principalLayoutsBuilder.createLeftControlsPanel(loadButton, saveButton, resetButton, clearButton, undoButton, btnTextOverlay);
     }
 
     private BorderPane buildAllBorderControls(VBox leftControlsPane, MenuBar topMenuBar,
@@ -99,7 +104,6 @@ public class UIService {
     private void buildAndShowScene(Stage stage, BorderPane root) {
         Scene scene = new Scene(root, 1600, 1000);
         setupKeyboardShortcuts(scene);
-
         loadAppIcon(stage);
         stage.setScene(scene);
         stage.show();
