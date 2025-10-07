@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.core.feature.blur.ui;
 
 import com.chilibytes.mystify.core.BaseDialog;
-import com.chilibytes.mystify.core.feature.blur.service.BlurEventHandlerService;
+import com.chilibytes.mystify.core.feature.blur.service.CustomBlurEventHandlerService;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
@@ -18,9 +18,9 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createVbox;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BlurSettingsDialog extends BaseDialog {
+public class CustomBlurDialog extends BaseDialog {
 
-    private final BlurEventHandlerService blurEventHandlerService;
+    private final CustomBlurEventHandlerService customBlurEventHandlerService;
 
     private Label lblBlur;
     private Slider sldBlur;
@@ -34,9 +34,8 @@ public class BlurSettingsDialog extends BaseDialog {
 
     @Override
     public void configureDialogControls() {
-        this.sldBlur = createSlider();
+        this.sldBlur = createSlider(0, 10, 0);
         this.sldBrush = createSlider();
-
         this.lblBlur = createLabel(BLUR_SLIDER_LABEL + (int) this.sldBlur.getValue());
         this.lblBrush = createLabel(BRUSH_SLIDER_LABEL + (int) this.sldBrush.getValue());
     }
@@ -51,17 +50,18 @@ public class BlurSettingsDialog extends BaseDialog {
 
     @Override
     public void showDialog() {
-        this.displayModal("Blur Settings");
+        this.displayModal("Blur Settings", "Blur Settings", 350, 200);
     }
 
     @Override
     public void configureEventHandlers() {
-        BlurEventHandlerService.BlurDialogControls controls = new BlurEventHandlerService.BlurDialogControls(
+        CustomBlurEventHandlerService.BlurDialogControls controls = new CustomBlurEventHandlerService.BlurDialogControls(
                 this.lblBlur, this.sldBlur,
                 this.lblBrush, this.sldBrush,
                 this.getBtnOk(),
                 this.getBtnCancel()
+
         );
-        blurEventHandlerService.setupEventHandlers(this.getStage(), controls);
+        customBlurEventHandlerService.setupEventHandlers(this.getStage(), controls);
     }
 }
