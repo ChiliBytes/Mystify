@@ -25,6 +25,9 @@ public class PdfMakerService {
 
     public void createPdfFromImages(String inputFolder, String outputFolder, String resultingFileNamePrefix) {
         try {
+            inputFolder = inputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultInput() : inputFolder;
+            outputFolder = outputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultOutput() : outputFolder;
+
             List<String> commandArguments = new ArrayList<>(
                     List.of(
                             applicationProperties.getAppScriptsPythonVersion(),

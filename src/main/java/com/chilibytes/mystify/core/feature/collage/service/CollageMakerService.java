@@ -35,7 +35,7 @@ public class CollageMakerService {
 
     private static final String PYTHON_COLLAGE_SCRIPT_FILE = "collage-maker/collage_maker.py";
     private static final String PYTHON_COLLAGE_SCRIPT_NAME = "Collage Maker";
-    private static final int DEFAULT_COLLAGE_WIDTH_SIZE = 1000; //This affects the resolution
+    private static final int DEFAULT_COLLAGE_WIDTH_SIZE = 2000; //This affects the resolution
     private static final int DEFAULT_COLLAGE_INITIAL_HEIGHT_SIZE = 1000;
     private static final String DEFAULT_COLLAGE_PREFIX_NAME = "My-Collage";
     private static final int MAX_IMAGES_FOR_STANDARD_MODE = 6;
@@ -77,6 +77,9 @@ public class CollageMakerService {
 
     public void createCollage(String inputFolder, String outputFolder, String customCollagePrefix) {
         try {
+            inputFolder = inputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultInput() : inputFolder;
+            outputFolder = outputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultOutput() : outputFolder;
+
             this.imagesInDirectory = fileService.getAllImagesFromDirectory(inputFolder);
             String collagePrefix = getCollagesPrefix(customCollagePrefix);
 
@@ -97,12 +100,12 @@ public class CollageMakerService {
 
     }
 
-    public void createStandardCollage(String inputFolder, String outputFolder, String collageName) {
+    private void createStandardCollage(String inputFolder, String outputFolder, String collageName) {
         this.createStandardCollage(inputFolder, outputFolder, collageName,
                 DEFAULT_COLLAGE_WIDTH_SIZE, DEFAULT_COLLAGE_INITIAL_HEIGHT_SIZE, Boolean.FALSE);
     }
 
-    public void createBulkCollage(String inputFolder, String outputFolder, String customCollagePrefix) {
+    private void createBulkCollage(String inputFolder, String outputFolder, String customCollagePrefix) {
         int imagesInDirectoryCount = this.imagesInDirectory.size();
         //Get the optimal distribution and create the distribution map
         getOptimalDistribution(imagesInDirectoryCount);

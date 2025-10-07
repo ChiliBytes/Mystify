@@ -22,6 +22,9 @@ public class SlideshowService {
     private static final String PYTHON_SLIDESHOW_SCRIPT_NAME = "Slideshow Creator";
 
     public void createSlideShow(String imagesSourceFolderPath, String outputFolder,String videoName ,float secondsBetween) {
+        imagesSourceFolderPath = imagesSourceFolderPath.isBlank() ? applicationProperties.getAppWorkspaceDefaultInput() : imagesSourceFolderPath;
+        outputFolder = outputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultOutput() : outputFolder;
+
         List<String> commandArguments = List.of(
                 applicationProperties.getAppScriptsPythonVersion(),
                 applicationProperties.getAppScriptsPythonBasePath() + PYTHON_SLIDESHOW_SCRIPT_FILE,
