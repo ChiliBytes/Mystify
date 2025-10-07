@@ -1,7 +1,8 @@
 package com.chilibytes.mystify.ui.component;
 
+import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
 import com.chilibytes.mystify.general.service.CommonEventHandlerService;
-import com.chilibytes.mystify.core.feature.blur.ui.BlurSettingsDialog;
+import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
 import com.chilibytes.mystify.core.feature.pdf.ui.PdfMakerDialog;
 import com.chilibytes.mystify.core.feature.video.ui.SlideshowDialog;
@@ -21,10 +22,11 @@ import org.springframework.stereotype.Component;
 public class MenuBarBuilder {
 
     private final CommonEventHandlerService commonEventHandlerService;
-    private final BlurSettingsDialog blurSettingsDialog;
+    private final CustomBlurDialog customBlurDialog;
     private final CollageDialog collageDialog;
     private final PdfMakerDialog pdfMakerDialog;
     private final SlideshowDialog slideshowDialog;
+    private final AutoBlurDialog autoBlurDialog;
 
     @Getter
     @Setter
@@ -50,11 +52,14 @@ public class MenuBarBuilder {
         Menu editMenu = new Menu("Edit");
         editMenu.getItems().addAll(resetImageItem, clearImageItem);
 
-        MenuItem blurItem = new MenuItem("Blur Effect");
-        blurItem.setOnAction(e -> blurSettingsDialog.showDialog());
+        MenuItem customBlurItem = new MenuItem("Custom Blur");
+        customBlurItem.setOnAction(e -> customBlurDialog.showDialog());
+
+        MenuItem autoBlurItem = new MenuItem("Automatic Blur");
+        autoBlurItem.setOnAction(e -> autoBlurDialog.showDialog());
 
         Menu blurMenu = new Menu("Image Filters");
-        blurMenu.getItems().add(blurItem);
+        blurMenu.getItems().addAll(customBlurItem, autoBlurItem);
 
         MenuItem collageItem = new MenuItem("Create Collage");
         collageItem.setOnAction(e -> collageDialog.showDialog());

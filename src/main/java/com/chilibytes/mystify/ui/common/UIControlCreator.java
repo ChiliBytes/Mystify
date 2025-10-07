@@ -36,6 +36,7 @@ public class UIControlCreator {
     private static final String LABEL_STYLE = "-fx-text-fill: #ECF0F1; -fx-font-weight: bold;";
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
     private static final String BUTTON_STYLE = "-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-weight: bold;";
+    private static final int DEFAULT_SLIDER_WIDTH = 300;
 
     // Adding this initialization so we can access the non-static field applicationProperties from a custom holder
     @PostConstruct
@@ -104,11 +105,11 @@ public class UIControlCreator {
     }
 
     public static Slider createSlider(double min, double max, double value) {
-        return createSlider(min, max, value, 250, 250);
+        return createSlider(min, max, value, DEFAULT_SLIDER_WIDTH, DEFAULT_SLIDER_WIDTH);
     }
 
     public static Slider createSlider() {
-        return createSlider(0, 100, 50, 300, 300);
+        return createSlider(0, 100, 50, DEFAULT_SLIDER_WIDTH, DEFAULT_SLIDER_WIDTH);
     }
 
     public static Label createLabel(String text) {

@@ -27,18 +27,19 @@ import static com.chilibytes.mystify.ui.common.UIControlCreator.createStandardBu
 @Getter
 public abstract class BaseDialog {
 
-
     private Button btnOk;
     private Button btnCancel;
     private Stage stage;
 
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
+    private static final int DEFAULT_DIALOG_WIDTH = 850;
+    private static final int DEFAULT_DIALOG_HEIGHT = 320;
 
-    public void displayModal(String windowTitle, String dialogTitle) {
+    public void displayModal(String windowTitle, String dialogTitle, int width, int height) {
 
         configureFooterButtons();
         this.configureDialogControls();
-        Stage dialogStage = createModalStage(windowTitle, 850, 320);
+        Stage dialogStage = createModalStage(windowTitle, width, height);
 
         this.stage = dialogStage;
         this.configureEventHandlers();
@@ -53,8 +54,9 @@ public abstract class BaseDialog {
         dialogStage.showAndWait();
     }
 
-    public void displayModal(String windowTitle) {
-       this.displayModal(windowTitle, windowTitle);
+
+    public void displayModal(String windowTitle, String dialogTitle) {
+        this.displayModal(windowTitle, dialogTitle, DEFAULT_DIALOG_WIDTH, DEFAULT_DIALOG_HEIGHT);
     }
 
     private void configureFooterButtons() {
@@ -73,7 +75,7 @@ public abstract class BaseDialog {
         VBox layout = new VBox(15);
         layout.setPadding(new Insets(20));
         layout.setStyle(CONTROLS_COLOR_STYLE);
-        layout.setAlignment(Pos.CENTER);
+        layout.setAlignment(Pos.TOP_CENTER);
 
         HBox footerButtonsBox = configureFooterLayout(this.btnOk, this.btnCancel);
         Label dialogLabel = createLabel(dialogTitle);
@@ -89,8 +91,11 @@ public abstract class BaseDialog {
     }
 
     public abstract void configureDialogControls();
+
     public abstract List<VBox> configureDialogLayout();
+
     public abstract void showDialog();
+
     public abstract void configureEventHandlers();
 
 }
