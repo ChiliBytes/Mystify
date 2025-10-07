@@ -2,6 +2,7 @@ package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
 import com.chilibytes.mystify.core.service.ImageService;
+import com.chilibytes.mystify.ui.MystifyApplication;
 import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -9,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,14 @@ public class CommonEventHandlerService {
     private final PrincipalLayoutsBuilder principalLayoutsBuilder;
 
     @Setter
+    @Getter
     private WritableImage currentImage;
+
+    @Setter
+    @Getter
     private ImageView imageView;
+
+    //TODO: Can we use a getter via CommonEventHandlerService instead of adding to cache?
     private Image originalImage;
 
     public record CommonApplicationButtons(Button loadButton, Button saveButton,
@@ -52,8 +60,6 @@ public class CommonEventHandlerService {
         commonApplicationButtons.clearButton.setOnAction(e -> handleClearImage());
         commonApplicationButtons.undoButton.setOnAction(e -> handleUndo());
 
-        imageView.setOnMouseDragged(e -> blurProcessorService.handleApplyBlur(e, this.currentImage, this.imageView));
-        imageView.setOnMouseClicked(e -> blurProcessorService.handleApplyBlur(e, this.currentImage, this.imageView));
         imageView.setOnMouseReleased(e -> blurProcessorService.setDragging(Boolean.FALSE));
         imageView.setOnMouseExited(e -> blurProcessorService.setDragging(Boolean.FALSE));
 
@@ -81,6 +87,10 @@ public class CommonEventHandlerService {
         principalLayoutsBuilder.getOuterZoomSlider().setValue(100);
         undoService.clearHistory();
         principalLayoutsBuilder.updateUndoPanelButtonState(false);
+
+        MystifyApplication.controlSettingsCache.setOriginalImage(currentImage);
+        MystifyApplication.controlSettingsCache.setImageView(imageView);
+
     }
 
     public void handleSaveImage(Stage stage) {

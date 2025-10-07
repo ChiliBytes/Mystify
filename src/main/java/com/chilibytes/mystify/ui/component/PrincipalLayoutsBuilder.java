@@ -34,17 +34,18 @@ public class PrincipalLayoutsBuilder {
 
     public VBox createLeftControlsPanel(Button loadButton, Button saveButton,
                                         Button resetButton, Button clearButton,
-                                        Button undoButton) {
+                                        Button undoButton, Button btnTextOverlay) {
 
         HBox buttonsRow1 = createHBoxForLeftPanel(loadButton);
         HBox buttonsRow2 = createHBoxForLeftPanel(saveButton);
         HBox buttonsRow3 = createHBoxForLeftPanel(resetButton);
         HBox buttonsRow4 = createHBoxForLeftPanel(clearButton);
         HBox buttonsRow5 = createHBoxForLeftPanel(undoButton);
+        HBox buttonsRow6 = createHBoxForLeftPanel(btnTextOverlay);
 
         this.undoButtonReference = undoButton;
 
-        this.leftPaneControls = createVBoxForLeftPanel(buttonsRow1, buttonsRow2, buttonsRow3, buttonsRow4, buttonsRow5);
+        this.leftPaneControls = createVBoxForLeftPanel(buttonsRow1, buttonsRow2, buttonsRow3, buttonsRow4, buttonsRow5, buttonsRow6);
         return this.leftPaneControls;
     }
 
