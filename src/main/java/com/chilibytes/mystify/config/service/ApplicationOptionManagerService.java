@@ -3,6 +3,7 @@ package com.chilibytes.mystify.config.service;
 import com.chilibytes.mystify.ui.MystifyApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,6 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 public class ApplicationOptionManagerService {
 
     private static final String CONFIG_FILE = "settings.json";
-
-
     private Settings currentSettings;
 
     public void saveSettings(int blurLevel, int brushSize) {
@@ -33,7 +32,9 @@ public class ApplicationOptionManagerService {
     }
 
     private void persistSettings(int blurLevel, int brushSize) {
-        currentSettings = new Settings(blurLevel, brushSize);
+        loadSettings();
+        currentSettings = new Settings(blurLevel, brushSize, currentSettings.leftPaneMinWidth, currentSettings.leftPaneMaxWidth,
+                currentSettings.leftPanePadding, currentSettings.footerMinHeight, currentSettings.footerMaxHeight);
 
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -65,6 +66,7 @@ public class ApplicationOptionManagerService {
 
     @ToString
     @Getter
+    @AllArgsConstructor
     public static class Settings {
 
         private static final int DEFAULT_BLUR_LEVEL = 15;
@@ -84,16 +86,6 @@ public class ApplicationOptionManagerService {
         private final int leftPanePadding;
         private final int footerMinHeight;
         private final int footerMaxHeight;
-
-        public Settings(int blurLevel, int brushSize) {
-            this.blurLevel = blurLevel;
-            this.brushSize = brushSize;
-            this.leftPaneMinWidth = DEFAULT_LEFT_PANEL_MIN_WIDTH;
-            this.leftPaneMaxWidth = DEFAULT_LEFT_PANEL_MAX_WIDTH;
-            this.leftPanePadding = DEFAULT_LEFT_PANEL_PADDING;
-            this.footerMinHeight = DEFAULT_FOOTER_MIN_HEIGHT;
-            this.footerMaxHeight = DEFAULT_FOOTER_MAX_HEIGHT;
-        }
 
         public Settings() {
             this.blurLevel = DEFAULT_BLUR_LEVEL;
