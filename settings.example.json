@@ -1,10 +1,9 @@
 {
-  "blurLevel": 3,
-  "brushSize": 72,
-  "zoomLevel": 1.4882246376811596,
-  "leftPaneMinWidth": 80,
-  "leftPaneMaxWidth": 100,
-  "leftPanePadding": 15,
+  "blurLevel": 2,
+  "brushSize": 70,
+  "leftPaneMinWidth": 50,
+  "leftPaneMaxWidth": 70,
+  "leftPanePadding": 8,
   "footerMinHeight": 35,
   "footerMaxHeight": 45
 }
