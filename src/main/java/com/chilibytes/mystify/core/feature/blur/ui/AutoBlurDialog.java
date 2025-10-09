@@ -49,6 +49,6 @@ public class AutoBlurDialog extends BaseDialog {
         AutoBlurEventHandlerService.AutoBlurDialogControls controls = new AutoBlurEventHandlerService.AutoBlurDialogControls(
                 this.lblTitle, this.sldBlurLevel, this.getBtnOk(), this.getBtnCancel()
         );
-        autoBlurEventHandlerService.setupEventHandlers(controls);
+        autoBlurEventHandlerService.setupEventHandlers(this.getStage(), controls);
     }
 }
