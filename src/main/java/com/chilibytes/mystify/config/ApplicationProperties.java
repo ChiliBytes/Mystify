@@ -41,7 +41,7 @@ public class ApplicationProperties {
     @Value("${app.workspace.default.output:/opt/mystify/}")
     private String appWorkspaceDefaultOutput;
 
-    @Value("${app.core.images.allowed.extensions:jpg,jpeg,png,JPG,JPEG,PNG}")
+    @Value("${app.core.images.allowed.extensions:jpg,jpeg,png,svg,JPG,JPEG,PNG,SVG}")
     private String[] allowedExtensions;
 
     public List<String> getAppImagesAllowedExtensions() {

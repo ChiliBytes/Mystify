@@ -56,6 +56,10 @@ public abstract class BaseDialog {
         this.displayModal(windowTitle, dialogTitle, DEFAULT_DIALOG_WIDTH, DEFAULT_DIALOG_HEIGHT);
     }
 
+    public void displayModal(String windowTitle, int width, int height) {
+        this.displayModal(windowTitle, windowTitle, width, height);
+    }
+
     private void configureFooterButtons() {
         this.btnOk = createStandardButton("Ok");
         this.btnCancel = createStandardButton("Cancel");
