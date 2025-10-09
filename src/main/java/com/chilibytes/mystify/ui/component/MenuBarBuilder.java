@@ -2,6 +2,7 @@ package com.chilibytes.mystify.ui.component;
 
 import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
 import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
+import com.chilibytes.mystify.core.feature.imageoverlay.ui.ImageOverlayDialog;
 import com.chilibytes.mystify.general.service.CommonEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
@@ -29,6 +30,7 @@ public class MenuBarBuilder {
     private final SlideshowDialog slideshowDialog;
     private final AutoBlurDialog autoBlurDialog;
     private final GrayScaleDialog grayScaleDialog;
+    private final ImageOverlayDialog imageOverlayDialog;
 
     @Getter
     @Setter
@@ -72,8 +74,11 @@ public class MenuBarBuilder {
         MenuItem images2PdfItem = new MenuItem("Images to PDF");
         images2PdfItem.setOnAction(e -> pdfMakerDialog.showDialog());
 
+        MenuItem overlayImagesItem = new MenuItem("Overlay Images");
+        overlayImagesItem.setOnAction(e -> imageOverlayDialog.showDialog());
+
         Menu collageMenu = new Menu("Image Creation");
-        collageMenu.getItems().addAll(collageItem, images2PdfItem);
+        collageMenu.getItems().addAll(collageItem, images2PdfItem, overlayImagesItem);
 
 
         MenuItem slideshowsItem = new MenuItem("Create SlideShows");

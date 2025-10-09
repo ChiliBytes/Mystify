@@ -8,6 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -116,6 +117,10 @@ public class CommonEventHandlerService {
             currentImage = blurProcessorService.createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
             setCurrentImage(currentImage);
             imageView.setImage(currentImage);
+
+            ((Pane)imageView.getParent())
+                    .getChildren()
+                    .removeIf(control -> !(control instanceof  ImageView));
         }
     }
 

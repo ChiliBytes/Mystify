@@ -1,6 +1,7 @@
 package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.config.ApplicationProperties;
+import com.chilibytes.mystify.core.feature.imageoverlay.service.ImageOverlayService;
 import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -11,8 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.*;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,6 +41,8 @@ public class FileService {
     private final ApplicationProperties applicationProperties;
     private List<String> imagesAllowedExtensions;
     private List<String> imagesAllowedWildCards;
+
+    private final ImageOverlayService imageOverlayService;
 
     @PostConstruct
     private void getAllowedExtensions() {
@@ -74,7 +81,11 @@ public class FileService {
 
         if (file != null) {
             try {
-                saveImageToFile(image, file);
+                Image imageToSave = SharedConstant.isMultiLayerImage() ?
+                        imageOverlayService.unifyImage() :
+                        image;
+                saveImageToFile(imageToSave, file);
+                SharedConstant.setMultiLayerImage(false);
                 return true;
             } catch (IOException e) {
                 log.error("IOException on saveImage(): {}", e.getMessage(), e);
@@ -183,11 +194,11 @@ public class FileService {
         }
     }
 
-    public List<String> getAllImagesFromDirectory(String collagePath){
+    public List<String> getAllImagesFromDirectory(String collagePath) {
         File dir = new File(collagePath);
         List<String> imageList = new ArrayList<>();
         if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println("Directory does not exists: " + collagePath);
+            log.warn("Directory does not exists: {}", collagePath);
             return imageList;
         }
 
@@ -199,7 +210,7 @@ public class FileService {
         });
 
         if (imageFiles != null) {
-                Arrays.sort(imageFiles, Comparator.comparing(File::getName,
+            Arrays.sort(imageFiles, Comparator.comparing(File::getName,
                     Comparator.comparingInt(FileService::extractNumber)));
 
             for (File file : imageFiles) {
@@ -208,6 +219,7 @@ public class FileService {
         }
         return imageList;
     }
+
     private static int extractNumber(String name) {
         try {
             String num = name.replaceAll("\\D+", "");
