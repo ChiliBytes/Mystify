@@ -49,11 +49,8 @@ public abstract class BaseDialog {
         Scene settingsScene = new Scene(layout);
         dialogStage.setScene(settingsScene);
 
-        this.btnCancel.setOnAction(e -> dialogStage.close());
-
         dialogStage.showAndWait();
     }
-
 
     public void displayModal(String windowTitle, String dialogTitle) {
         this.displayModal(windowTitle, dialogTitle, DEFAULT_DIALOG_WIDTH, DEFAULT_DIALOG_HEIGHT);

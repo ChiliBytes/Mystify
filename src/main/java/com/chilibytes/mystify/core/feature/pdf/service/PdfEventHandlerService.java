@@ -58,5 +58,7 @@ public class PdfEventHandlerService {
 
         );
 
+        pdfMakerDialogControls.btnCancel.setOnAction(e -> stage.close());
+
     }
 }

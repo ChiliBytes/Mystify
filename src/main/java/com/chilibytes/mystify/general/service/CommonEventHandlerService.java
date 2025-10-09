@@ -2,7 +2,6 @@ package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
 import com.chilibytes.mystify.core.service.ImageService;
-import com.chilibytes.mystify.ui.MystifyApplication;
 import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -38,7 +37,7 @@ public class CommonEventHandlerService {
     @Getter
     private ImageView imageView;
 
-    //TODO: Can we use a getter via CommonEventHandlerService instead of adding to cache?
+    @Getter
     private Image originalImage;
 
     public record CommonApplicationButtons(Button loadButton, Button saveButton,
@@ -79,6 +78,7 @@ public class CommonEventHandlerService {
     }
 
     private void processLoadedImage(Image image) {
+        this.originalImage = image;
         currentImage = imageService.createWritableImageCopy(image);
         setCurrentImage(currentImage);
         imageView.setImage(currentImage);
@@ -87,10 +87,7 @@ public class CommonEventHandlerService {
         principalLayoutsBuilder.getOuterZoomSlider().setValue(100);
         undoService.clearHistory();
         principalLayoutsBuilder.updateUndoPanelButtonState(false);
-
-        MystifyApplication.controlSettingsCache.setOriginalImage(currentImage);
-        MystifyApplication.controlSettingsCache.setImageView(imageView);
-
+        this.setImageView(imageView);
     }
 
     public void handleSaveImage(Stage stage) {
@@ -129,5 +126,9 @@ public class CommonEventHandlerService {
             setCurrentImage(currentImage);
             imageView.setImage(currentImage);
         }
+    }
+
+    public WritableImage handleCreateOriginalImageCopy() {
+        return imageService.createWritableImageCopy(this.originalImage);
     }
 }
