@@ -1,6 +1,7 @@
 package com.chilibytes.mystify.ui.component;
 
 import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
+import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
 import com.chilibytes.mystify.general.service.CommonEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
@@ -27,6 +28,7 @@ public class MenuBarBuilder {
     private final PdfMakerDialog pdfMakerDialog;
     private final SlideshowDialog slideshowDialog;
     private final AutoBlurDialog autoBlurDialog;
+    private final GrayScaleDialog grayScaleDialog;
 
     @Getter
     @Setter
@@ -58,8 +60,11 @@ public class MenuBarBuilder {
         MenuItem autoBlurItem = new MenuItem("Automatic Blur");
         autoBlurItem.setOnAction(e -> autoBlurDialog.showDialog());
 
+        MenuItem grayScaleItem = new MenuItem("Gray Scale");
+        grayScaleItem.setOnAction(e -> grayScaleDialog.showDialog());
+
         Menu blurMenu = new Menu("Image Filters");
-        blurMenu.getItems().addAll(customBlurItem, autoBlurItem);
+        blurMenu.getItems().addAll(customBlurItem, autoBlurItem, grayScaleItem);
 
         MenuItem collageItem = new MenuItem("Create Collage");
         collageItem.setOnAction(e -> collageDialog.showDialog());
