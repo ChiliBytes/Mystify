@@ -4,7 +4,6 @@ import com.chilibytes.mystify.config.ControlSettingsCache;
 import com.chilibytes.mystify.config.SpringConfig;
 import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.component.UIService;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -31,10 +30,6 @@ public class MystifyApplication extends javafx.application.Application {
         controlSettingsCache.setLeftPaneMinWidth(settings.getLeftPaneMinWidth());
         controlSettingsCache.setLeftPaneMaxWidth(settings.getLeftPaneMaxWidth());
         controlSettingsCache.setLeftPanePadding(settings.getLeftPanePadding());
-
-        //TODO: Can we use a getter via CommonEventHandlerService instead of adding to cache?
-        controlSettingsCache.setOriginalImage(null);
-        controlSettingsCache.setImageView(new ImageView());
     }
 
     @Override

@@ -181,26 +181,21 @@ public class BlurProcessorService {
         blurDialogControls.lblBrush().setText(BRUSH_SLIDER_LABEL + (int) blurDialogControls.sldBrush().getValue() + "px");
     }
 
-    public void applyFullBlur(AutoBlurEventHandlerService.AutoBlurDialogControls controls,
-                              CommonEventHandlerService eventHandlerService) {
-        WritableImage copy = new WritableImage(
-                (int) MystifyApplication.controlSettingsCache.getOriginalImage().getWidth(),
-                (int) MystifyApplication.controlSettingsCache.getOriginalImage().getHeight()
-        );
-        copy.getPixelWriter().setPixels(
-                0, 0,
-                (int) MystifyApplication.controlSettingsCache.getOriginalImage().getWidth(),
-                (int) MystifyApplication.controlSettingsCache.getOriginalImage().getHeight(),
-                MystifyApplication.controlSettingsCache.getOriginalImage().getPixelReader(),
-                0, 0
-        );
-        WritableImage newImage = blurEntirePicture(copy, (int) controls.sldBlurLevel().getValue());
+    public void applyFullBlur(CommonEventHandlerService eventHandlerService, int blurLevel) {
+        if (blurLevel == 0) {
+            eventHandlerService.handleResetImage();
+        }
+        WritableImage copy = eventHandlerService.handleCreateOriginalImageCopy();
+        WritableImage newImage = blurEntirePicture(copy, blurLevel);
         eventHandlerService.setCurrentImage(newImage);
-        MystifyApplication.controlSettingsCache.getImageView().setImage(newImage);
+        eventHandlerService.getImageView().setImage(newImage);
     }
 
+
     public WritableImage blurEntirePicture(Image image, double blurRadius) {
-        if (image == null || blurRadius <= 0) return (WritableImage) image;
+        if (image == null || blurRadius <= 0) {
+            return (WritableImage) image;
+        }
 
         ImageView tempView = new ImageView(image);
         tempView.setEffect(new GaussianBlur(blurRadius));
