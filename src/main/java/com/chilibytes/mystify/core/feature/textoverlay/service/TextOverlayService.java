@@ -1,6 +1,7 @@
 package com.chilibytes.mystify.core.feature.textoverlay.service;
 
 import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.SharedConstant;
 import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.geometry.Point2D;
@@ -61,7 +62,7 @@ public class TextOverlayService {
 
         // 2. Create the TextField
         TextField textField = new TextField();
-        textField.setPromptText("Escribe aquí...");
+        textField.setPromptText("Your text here...");
         textField.setPrefWidth(200);
         textField.setMaxWidth(200);
 
@@ -110,9 +111,8 @@ public class TextOverlayService {
             gc.drawImage(currentImage, 0, 0);
 
             // 4. Text configurations
-            gc.setFill(Color.DEEPPINK);
-
-            gc.setFont(Font.font("Purisa", 55));
+            gc.setFill(SharedConstant.getGlobalFontColor());
+            gc.setFont(Font.font(SharedConstant.getGlobalFontFamily(), SharedConstant.getGlobalFontSize()));
             gc.setTextAlign(TextAlignment.LEFT);
 
             // 5.  Get the text position in the original imaged (Not Zoomed),
@@ -126,7 +126,9 @@ public class TextOverlayService {
 
             // Multiply the lastClickPosition by the scaling-factor to get the position with the WritableImage
             double drawX = lastClickPosition.getX() * scaleFactor;
-            double drawY = (lastClickPosition.getY() + 30) * scaleFactor; // +30 para que el texto esté debajo del TextField
+
+            // +30 So the text will be placed under the TextArea control
+            double drawY = (lastClickPosition.getY() + 30) * scaleFactor;
 
             // 6. Drawing the text
             gc.fillText(textField.getText(), drawX, drawY);
@@ -134,10 +136,10 @@ public class TextOverlayService {
             // 7. Get back the Canvas into a WritableImage
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            WritableImage newImage = canvas.snapshot(params, null);
 
             // 8. Updating currentImage and ImageView objects
-            currentImage = newImage;
+            currentImage = canvas.snapshot(params, null);
+
             commonEventHandlerService.setCurrentImage(currentImage);
             imageView.setImage(currentImage);
 

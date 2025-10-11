@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static com.chilibytes.mystify.ui.common.UIControlCreator.createHBoxForLeftPanel;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createHBox;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createFooter;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createSlider;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createVBoxForLeftPanel;
@@ -36,12 +36,12 @@ public class PrincipalLayoutsBuilder {
                                         Button resetButton, Button clearButton,
                                         Button undoButton, Button btnTextOverlay) {
 
-        HBox buttonsRow1 = createHBoxForLeftPanel(loadButton);
-        HBox buttonsRow2 = createHBoxForLeftPanel(saveButton);
-        HBox buttonsRow3 = createHBoxForLeftPanel(resetButton);
-        HBox buttonsRow4 = createHBoxForLeftPanel(clearButton);
-        HBox buttonsRow5 = createHBoxForLeftPanel(undoButton);
-        HBox buttonsRow6 = createHBoxForLeftPanel(btnTextOverlay);
+        HBox buttonsRow1 = createHBox(loadButton);
+        HBox buttonsRow2 = createHBox(saveButton);
+        HBox buttonsRow3 = createHBox(resetButton);
+        HBox buttonsRow4 = createHBox(clearButton);
+        HBox buttonsRow5 = createHBox(undoButton);
+        HBox buttonsRow6 = createHBox(btnTextOverlay);
 
         this.undoButtonReference = undoButton;
 

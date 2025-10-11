@@ -8,6 +8,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
@@ -37,6 +39,9 @@ public class UIControlCreator {
     private static final String CONTROLS_COLOR_STYLE = "-fx-background-color: #2C3E50; -fx-text-fill: white;";
     private static final String BUTTON_STYLE = "-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-weight: bold;";
     private static final int DEFAULT_SLIDER_WIDTH = 300;
+    private static final int DEFAULT_TEXTBOX_HEIGHT = 28;
+    private static final int DEFAULT_COLOR_PICKER_WIDTH = 250;
+    private static final int DEFAULT_COMBO_BOX_WIDTH = 100;
 
     // Adding this initialization so we can access the non-static field applicationProperties from a custom holder
     @PostConstruct
@@ -93,23 +98,23 @@ public class UIControlCreator {
         return button;
     }
 
-    public static Slider createSlider(double min, double max, double value, double mindWidth, double maxWidth) {
+    public static Slider createSlider(double min, double max, double value, double width) {
         Slider slider = new Slider(min, max, value);
         slider.setShowTickLabels(Boolean.TRUE);
         slider.setShowTickMarks(Boolean.FALSE);
         slider.setMajorTickUnit(10);
         slider.setBlockIncrement(5);
-        slider.setMinWidth(mindWidth);
-        slider.setMaxWidth(maxWidth);
+        slider.setMinWidth(width);
+        slider.setMaxWidth(width);
         return slider;
     }
 
     public static Slider createSlider(double min, double max, double value) {
-        return createSlider(min, max, value, DEFAULT_SLIDER_WIDTH, DEFAULT_SLIDER_WIDTH);
+        return createSlider(min, max, value, DEFAULT_SLIDER_WIDTH);
     }
 
     public static Slider createSlider() {
-        return createSlider(0, 100, 50, DEFAULT_SLIDER_WIDTH, DEFAULT_SLIDER_WIDTH);
+        return createSlider(0, 100, 50, DEFAULT_SLIDER_WIDTH);
     }
 
     public static Label createLabel(String text) {
@@ -132,14 +137,46 @@ public class UIControlCreator {
     }
 
     public static TextArea createTextArea(String text) {
+        return createTextArea(text, 400, DEFAULT_TEXTBOX_HEIGHT);
+    }
+
+    public static TextArea createTextArea(String text, double width, double height) {
         TextArea textArea = createReadOnlyTextArea(text);
         textArea.setEditable(Boolean.TRUE);
         textArea.setWrapText(true);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMinHeight(30);
-        textArea.setMaxHeight(30);
+        textArea.setMinWidth(width);
+        textArea.setMaxWidth(width);
+        textArea.setMinHeight(height);
+        textArea.setMaxHeight(height);
         return textArea;
     }
+
+
+    public static ComboBox<String> createComboBox() {
+        return createComboBox(DEFAULT_COMBO_BOX_WIDTH);
+    }
+
+    public static ComboBox<String> createComboBox(double width) {
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.setMinWidth(width);
+        comboBox.setMaxWidth(width);
+        return comboBox;
+    }
+
+    public static ColorPicker createColorPicker(Color defaultColor) {
+        ColorPicker colorPicker = new ColorPicker(defaultColor);
+        colorPicker.setMinWidth(DEFAULT_COLOR_PICKER_WIDTH);
+        colorPicker.setMaxWidth(DEFAULT_COLOR_PICKER_WIDTH);
+        return colorPicker;
+    }
+
+    public static ColorPicker createColorPicker(Color defaultColor, double width) {
+        ColorPicker colorPicker = new ColorPicker(defaultColor);
+        colorPicker.setMinWidth(width);
+        colorPicker.setMaxWidth(width);
+        return colorPicker;
+    }
+
 
     public static HBox createFooter(Slider zoomSlider) {
         HBox zoomContainer = new HBox(10, zoomSlider);
@@ -152,7 +189,7 @@ public class UIControlCreator {
         return zoomContainer;
     }
 
-    public static HBox createHBoxForLeftPanel(Node nodes) {
+    public static HBox createHBox(Node... nodes) {
         HBox newRow = new HBox(10, nodes);
         newRow.setAlignment(Pos.BASELINE_LEFT);
         return newRow;
@@ -189,9 +226,9 @@ public class UIControlCreator {
 
     }
 
-    public static VBox createVbox(Node... nodes){
+    public static VBox createVbox(Node... nodes) {
         VBox dialogGroup = new VBox(5, nodes);
         dialogGroup.setAlignment(Pos.CENTER_LEFT);
-        return  dialogGroup;
+        return dialogGroup;
     }
 }

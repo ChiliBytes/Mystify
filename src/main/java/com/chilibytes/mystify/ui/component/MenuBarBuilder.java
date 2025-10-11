@@ -3,6 +3,7 @@ package com.chilibytes.mystify.ui.component;
 import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
 import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
 import com.chilibytes.mystify.core.feature.imageoverlay.ui.ImageOverlayDialog;
+import com.chilibytes.mystify.core.feature.textoverlay.ui.FontSettingsDialog;
 import com.chilibytes.mystify.general.service.CommonEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
@@ -31,6 +32,7 @@ public class MenuBarBuilder {
     private final AutoBlurDialog autoBlurDialog;
     private final GrayScaleDialog grayScaleDialog;
     private final ImageOverlayDialog imageOverlayDialog;
+    private final FontSettingsDialog fontSettingsDialog;
 
     @Getter
     @Setter
@@ -81,6 +83,12 @@ public class MenuBarBuilder {
         collageMenu.getItems().addAll(collageItem, images2PdfItem, overlayImagesItem);
 
 
+        MenuItem fontSettingsItem = new MenuItem("Font Settings");
+        fontSettingsItem.setOnAction(e -> fontSettingsDialog.showDialog());
+
+        Menu settingsMenu = new Menu("Settings");
+        settingsMenu.getItems().add(fontSettingsItem);
+
         MenuItem slideshowsItem = new MenuItem("Create SlideShows");
         slideshowsItem.setOnAction(e -> slideshowDialog.showDialog());
 
@@ -89,7 +97,7 @@ public class MenuBarBuilder {
 
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu, slideshowMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu, settingsMenu,slideshowMenu);
         menuBar.useSystemMenuBarProperty().set(false);
 
         return menuBar;
