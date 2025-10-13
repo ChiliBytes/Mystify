@@ -1,6 +1,6 @@
 package com.chilibytes.mystify.core.feature.blur.service;
 
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.MystifyApplication;
@@ -105,9 +105,9 @@ public class BlurProcessorService {
         return blankImage;
     }
 
-    public void handleApplyBlur(MouseEvent event, CommonEventHandlerService commonEventHandlerService) {
-        ImageView imageView = commonEventHandlerService.getImageView();
-        WritableImage currentImage = commonEventHandlerService.getCurrentImage();
+    public void handleApplyBlur(MouseEvent event, MainEventHandlerService mainEventHandlerService) {
+        ImageView imageView = mainEventHandlerService.getImageView();
+        WritableImage currentImage = mainEventHandlerService.getCurrentImage();
 
         if (currentImage != null) {
             if (event.getEventType() == MouseEvent.MOUSE_CLICKED ||
@@ -181,7 +181,7 @@ public class BlurProcessorService {
         blurDialogControls.lblBrush().setText(BRUSH_SLIDER_LABEL + (int) blurDialogControls.sldBrush().getValue() + "px");
     }
 
-    public void applyFullBlur(CommonEventHandlerService eventHandlerService, int blurLevel) {
+    public void applyFullBlur(MainEventHandlerService eventHandlerService, int blurLevel) {
         if (blurLevel == 0) {
             eventHandlerService.handleResetImage();
         }

@@ -21,11 +21,11 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CommonEventHandlerService {
+public class MainEventHandlerService {
 
     private final BlurProcessorService blurProcessorService;
     private final ZoomService zoomService;
-    private final FileService fileService;
+    private final MultimediaFileService multimediaFileService;
     private final ImageService imageService;
     private final UndoService undoService;
     private final PrincipalLayoutsBuilder principalLayoutsBuilder;
@@ -71,7 +71,7 @@ public class CommonEventHandlerService {
     }
 
     public void handleLoadImage(Stage stage) {
-        java.util.Optional<Image> loadedImage = fileService.loadImage(stage);
+        java.util.Optional<Image> loadedImage = multimediaFileService.loadImage(stage);
         loadedImage.ifPresent(image -> {
             this.originalImage = image;
             processLoadedImage(image);
@@ -93,7 +93,7 @@ public class CommonEventHandlerService {
 
     public void handleSaveImage(Stage stage) {
         if (currentImage != null) {
-            boolean saved = fileService.saveImage(stage, currentImage, fileService.getDefaultExtension());
+            boolean saved = multimediaFileService.saveImage(stage, currentImage, multimediaFileService.getDefaultExtension());
             if (saved) {
                 showSuccess("Image saved successfully");
             }

@@ -35,7 +35,7 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class MultimediaFileService {
 
     private String defaultExtension = "png";
     private final ApplicationProperties applicationProperties;
@@ -211,7 +211,7 @@ public class FileService {
 
         if (imageFiles != null) {
             Arrays.sort(imageFiles, Comparator.comparing(File::getName,
-                    Comparator.comparingInt(FileService::extractNumber)));
+                    Comparator.comparingInt(MultimediaFileService::extractNumber)));
 
             for (File file : imageFiles) {
                 imageList.add(file.getName());

@@ -1,6 +1,6 @@
 package com.chilibytes.mystify.core.feature.grayscale.service;
 
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class GrayScaleEventHandlerService {
-    private final CommonEventHandlerService commonEventHandlerService;
+    private final MainEventHandlerService mainEventHandlerService;
 
     private final GrayScaleService grayScaleService;
 
@@ -24,11 +24,11 @@ public class GrayScaleEventHandlerService {
     public void setupEventHandlers(Stage stage, GrayScaleControls controls) {
         controls.okButton.setOnAction(e -> stage.close());
         controls.sldScaleFactor.valueProperty().addListener((obs, oldValue, newValue) ->
-                grayScaleService.grayScaleImage(commonEventHandlerService, ((Double) newValue))
+                grayScaleService.grayScaleImage(mainEventHandlerService, ((Double) newValue))
         );
 
         controls.cancelButton.setOnAction(e -> {
-            commonEventHandlerService.handleResetImage();
+            mainEventHandlerService.handleResetImage();
             stage.close();
         });
     }

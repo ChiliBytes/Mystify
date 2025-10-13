@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.core.feature.collage.service;
 
 import com.chilibytes.mystify.general.service.ScriptProcessorService;
-import com.chilibytes.mystify.general.service.FileService;
+import com.chilibytes.mystify.general.service.MultimediaFileService;
 import com.chilibytes.mystify.config.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class CollageMakerService {
 
     private final ScriptProcessorService scriptProcessorService;
     private final ApplicationProperties applicationProperties;
-    private final FileService fileService;
+    private final MultimediaFileService multimediaFileService;
 
     private static final String PYTHON_COLLAGE_SCRIPT_FILE = "collage-maker/collage_maker.py";
     private static final String PYTHON_COLLAGE_SCRIPT_NAME = "Collage Maker";
@@ -80,7 +80,7 @@ public class CollageMakerService {
             inputFolder = inputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultInput() : inputFolder;
             outputFolder = outputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultOutput() : outputFolder;
 
-            this.imagesInDirectory = fileService.getAllImagesFromDirectory(inputFolder);
+            this.imagesInDirectory = multimediaFileService.getAllImagesFromDirectory(inputFolder);
             String collagePrefix = getCollagesPrefix(customCollagePrefix);
 
             // Do not split in different collages when there are few images

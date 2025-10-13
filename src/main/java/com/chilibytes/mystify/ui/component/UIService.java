@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.ui.component;
 
 import com.chilibytes.mystify.core.feature.textoverlay.service.TextOverlayEventHandlerService;
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.general.service.ZoomService;
 import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.ui.common.UIControlCreator;
@@ -35,7 +35,7 @@ public class UIService {
     private final ApplicationProperties applicationProperties;
     private final PrincipalLayoutsBuilder principalLayoutsBuilder;
     private final MenuBarBuilder menuBarBuilder;
-    private final CommonEventHandlerService commonEventHandlerService;
+    private final MainEventHandlerService mainEventHandlerService;
     private final TextOverlayEventHandlerService textOverlayEventHandlerService;
 
     private ImageView imageView;
@@ -64,16 +64,16 @@ public class UIService {
         BorderPane root = buildAllBorderControls(controlsPanel, menuBar, scrollPane, footer);
         buildAndShowScene(primaryStage, root);
 
-        CommonEventHandlerService.CommonApplicationButtons commonApplicationButtons = new CommonEventHandlerService.CommonApplicationButtons(loadButton, saveButton, resetButton,
+        MainEventHandlerService.CommonApplicationButtons commonApplicationButtons = new MainEventHandlerService.CommonApplicationButtons(loadButton, saveButton, resetButton,
                 clearButton, undoButton);
 
-        CommonEventHandlerService.CommonApplicationControls commonApplicationControls = new CommonEventHandlerService.CommonApplicationControls(imageView,
+        MainEventHandlerService.CommonApplicationControls commonApplicationControls = new MainEventHandlerService.CommonApplicationControls(imageView,
                 principalLayoutsBuilder.getOuterZoomSlider());
 
-        commonEventHandlerService.setupEventHandlers(primaryStage, commonApplicationButtons, commonApplicationControls);
+        mainEventHandlerService.setupEventHandlers(primaryStage, commonApplicationButtons, commonApplicationControls);
 
         TextOverlayEventHandlerService.TextOverlayControls textOverlayControls = new TextOverlayEventHandlerService.TextOverlayControls(this.btnTextOverlay,
-                this.commonEventHandlerService);
+                this.mainEventHandlerService);
 
         textOverlayEventHandlerService.setupEventHandlers(textOverlayControls);
 
@@ -111,7 +111,7 @@ public class UIService {
 
     private void setupKeyboardShortcuts(Scene scene) {
         KeyCombination undoShortcut = new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN);
-        scene.getAccelerators().put(undoShortcut, commonEventHandlerService::handleUndo);
+        scene.getAccelerators().put(undoShortcut, mainEventHandlerService::handleUndo);
     }
 
     private void loadAppIcon(Stage primaryStage) {

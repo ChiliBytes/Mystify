@@ -1,6 +1,6 @@
 package com.chilibytes.mystify.core.feature.textoverlay.service;
 
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.general.service.SharedConstant;
 import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
@@ -38,19 +38,19 @@ public class TextOverlayService {
     private final UndoService undoService;
 
     public void handleImageClickForText(MouseEvent event,
-                                        CommonEventHandlerService commonEventHandlerService) {
+                                        MainEventHandlerService mainEventHandlerService) {
         // Saving the last click relative position from the ImageView
         this.lastClickPosition = new Point2D(event.getX(), event.getY());
 
         // Deactivating the text mode after the click
         textModeActive = false;
 
-        drawText(commonEventHandlerService);
+        drawText(mainEventHandlerService);
     }
 
-    public void drawText(CommonEventHandlerService commonEventHandlerService) {
+    public void drawText(MainEventHandlerService mainEventHandlerService) {
         // Ensuring the ImageView is contained inside a Pane/StackPane in order to overlay the text
-        if (commonEventHandlerService.getCurrentImage() == null || lastClickPosition == null || !(commonEventHandlerService.getImageView().getParent() instanceof Pane imageContainer)) {
+        if (mainEventHandlerService.getCurrentImage() == null || lastClickPosition == null || !(mainEventHandlerService.getImageView().getParent() instanceof Pane imageContainer)) {
             log.error("Could not draw text: currentImage is null, no click position, or ImageView parent is not a Pane.");
             return;
         }
@@ -74,13 +74,13 @@ public class TextOverlayService {
         this.activeTextField = textField;
 
         // 3. Finalizing text when ENTER is pressed
-        textField.setOnAction(e -> finalizeText(textField, imageContainer, commonEventHandlerService));
+        textField.setOnAction(e -> finalizeText(textField, imageContainer, mainEventHandlerService));
 
         // 4. Finalizing the text when the TextField loss the focus
         textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             // Lost focus
             if (!newVal) {
-                finalizeText(textField, imageContainer, commonEventHandlerService);
+                finalizeText(textField, imageContainer, mainEventHandlerService);
             }
         });
 
@@ -92,10 +92,10 @@ public class TextOverlayService {
     }
 
     private void finalizeText(TextField textField, Pane imageContainer,
-                              CommonEventHandlerService commonEventHandlerService) {
+                              MainEventHandlerService mainEventHandlerService) {
 
-        WritableImage currentImage = commonEventHandlerService.getCurrentImage();
-        ImageView imageView = commonEventHandlerService.getImageView();
+        WritableImage currentImage = mainEventHandlerService.getCurrentImage();
+        ImageView imageView = mainEventHandlerService.getImageView();
 
         // Process the text only if the TextFiled is active and contains text
         if (textField.getText() != null && !textField.getText().trim().isEmpty() && textField == activeTextField) {
@@ -140,7 +140,7 @@ public class TextOverlayService {
             // 8. Updating currentImage and ImageView objects
             currentImage = canvas.snapshot(params, null);
 
-            commonEventHandlerService.setCurrentImage(currentImage);
+            mainEventHandlerService.setCurrentImage(currentImage);
             imageView.setImage(currentImage);
 
             // 9. Updating the Undo button

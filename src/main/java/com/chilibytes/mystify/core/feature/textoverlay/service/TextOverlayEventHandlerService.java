@@ -1,7 +1,7 @@
 package com.chilibytes.mystify.core.feature.textoverlay.service;
 
 import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import javafx.scene.control.Button;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,25 +14,25 @@ public class TextOverlayEventHandlerService {
 
     private final TextOverlayService textOverlayService;
     private final BlurProcessorService blurProcessorService;
-    private final CommonEventHandlerService commonEventHandlerService;
+    private final MainEventHandlerService mainEventHandlerService;
 
     public record TextOverlayControls(Button btnActivateOverlay,
-                                      CommonEventHandlerService commonEventHandlerService) {
+                                      MainEventHandlerService mainEventHandlerService) {
     }
 
     public void setupEventHandlers(TextOverlayControls controls) {
         // When entering the text mode, we don't want to apply blur but write a text over the image.
-        commonEventHandlerService.getImageView().setOnMouseDragged(e -> {
+        mainEventHandlerService.getImageView().setOnMouseDragged(e -> {
             if (!textOverlayService.isTextModeActive()) {
-                blurProcessorService.handleApplyBlur(e, commonEventHandlerService);
+                blurProcessorService.handleApplyBlur(e, mainEventHandlerService);
             }
         });
 
-        commonEventHandlerService.getImageView().setOnMouseClicked(e -> {
+        mainEventHandlerService.getImageView().setOnMouseClicked(e -> {
             if (textOverlayService.isTextModeActive()) {
-                textOverlayService.handleImageClickForText(e, commonEventHandlerService);
+                textOverlayService.handleImageClickForText(e, mainEventHandlerService);
             } else {
-                blurProcessorService.handleApplyBlur(e, commonEventHandlerService);
+                blurProcessorService.handleApplyBlur(e, mainEventHandlerService);
             }
         });
 
