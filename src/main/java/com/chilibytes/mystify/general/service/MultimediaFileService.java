@@ -2,6 +2,7 @@ package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.core.feature.imageoverlay.service.ImageOverlayService;
+import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -32,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 
@@ -49,6 +51,8 @@ public class MultimediaFileService {
     private final ApplicationProperties applicationProperties;
     private final ImageOverlayService imageOverlayService;
     private final UndoService undoService;
+    private final PrincipalLayoutsBuilder principalLayoutsBuilder;
+    private final ZoomService zoomService;
 
     @PostConstruct
     private void getAllowedExtensions() {
@@ -81,6 +85,19 @@ public class MultimediaFileService {
         return Optional.empty();
     }
 
+    public void processLoadedImage(MainEventHandlerService mainEventHandlerService) {
+        ImageView imageView = mainEventHandlerService.getImageView();
+        WritableImage currentImage = createWritableImageCopy(mainEventHandlerService);
+        mainEventHandlerService.setCurrentImage(currentImage);
+        imageView.setImage(currentImage);
+        zoomService.resetZoom();
+        zoomService.applyZoom(imageView);
+        principalLayoutsBuilder.getOuterZoomSlider().setValue(100);
+        undoService.clearHistory();
+        principalLayoutsBuilder.updateUndoPanelButtonState(false);
+        mainEventHandlerService.setImageView(imageView);
+    }
+
     public boolean saveImage(Stage stage, Image image, String defaultExtension) {
         FileChooser fileChooser = createSaveFileChooser(defaultExtension);
         File file = fileChooser.showSaveDialog(stage);
@@ -103,6 +120,16 @@ public class MultimediaFileService {
             }
         }
         return false;
+    }
+
+    public void handleResetImage(MainEventHandlerService mainEventHandlerService) {
+        Image originalImage = mainEventHandlerService.getOriginalImage();
+        if (originalImage != null) {
+            undoService.saveState(mainEventHandlerService.getCurrentImage());
+            WritableImage currentImage = createWritableImageCopy(mainEventHandlerService);
+            mainEventHandlerService.setCurrentImage(currentImage);
+            mainEventHandlerService.getImageView().setImage(currentImage);
+        }
     }
 
     private FileChooser createImageFileChooser() {
@@ -259,5 +286,21 @@ public class MultimediaFileService {
         }
 
         return blankImage;
+    }
+
+    public WritableImage createWritableImageCopy(MainEventHandlerService mainEventHandlerService) {
+        Image source = mainEventHandlerService.getOriginalImage();
+        var copy = new WritableImage((int) source.getWidth(), (int) source.getHeight());
+        var reader = source.getPixelReader();
+        var writer = copy.getPixelWriter();
+
+        IntStream.range(0, (int) source.getHeight())
+                .forEach(y ->
+                        IntStream.range(0, (int) source.getWidth())
+                                .forEach(x ->
+                                        writer.setColor(x, y, reader.getColor(x, y))
+                                )
+                );
+        return copy;
     }
 }

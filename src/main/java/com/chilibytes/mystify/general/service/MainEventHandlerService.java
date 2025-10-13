@@ -1,8 +1,6 @@
 package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
-import com.chilibytes.mystify.core.service.ImageService;
-import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -25,9 +23,7 @@ public class MainEventHandlerService {
     private final BlurProcessorService blurProcessorService;
     private final ZoomService zoomService;
     private final MultimediaFileService multimediaFileService;
-    private final ImageService imageService;
     private final UndoService undoService;
-    private final PrincipalLayoutsBuilder principalLayoutsBuilder;
 
     @Setter
     @Getter
@@ -73,21 +69,8 @@ public class MainEventHandlerService {
         java.util.Optional<Image> loadedImage = multimediaFileService.loadImage(stage);
         loadedImage.ifPresent(image -> {
             this.originalImage = image;
-            processLoadedImage(image);
+            multimediaFileService.processLoadedImage(this);
         });
-    }
-
-    private void processLoadedImage(Image image) {
-        this.originalImage = image;
-        currentImage = imageService.createWritableImageCopy(image);
-        setCurrentImage(currentImage);
-        imageView.setImage(currentImage);
-        zoomService.resetZoom();
-        zoomService.applyZoom(imageView);
-        principalLayoutsBuilder.getOuterZoomSlider().setValue(100);
-        undoService.clearHistory();
-        principalLayoutsBuilder.updateUndoPanelButtonState(false);
-        this.setImageView(imageView);
     }
 
     public void handleSaveImage(Stage stage) {
@@ -106,15 +89,10 @@ public class MainEventHandlerService {
     }
 
     public void handleResetImage() {
-        if (originalImage != null) {
-            undoService.saveState(currentImage);
-            currentImage = imageService.createWritableImageCopy(originalImage);
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-        }
+        multimediaFileService.handleResetImage(this);
     }
 
     public WritableImage handleCreateOriginalImageCopy() {
-        return imageService.createWritableImageCopy(this.originalImage);
+        return multimediaFileService.createWritableImageCopy(this);
     }
 }
