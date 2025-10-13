@@ -2,6 +2,7 @@ package com.chilibytes.mystify.ui.component;
 
 import com.chilibytes.mystify.core.feature.textoverlay.service.TextOverlayEventHandlerService;
 import com.chilibytes.mystify.general.service.MainEventHandlerService;
+import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.general.service.ZoomService;
 import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.ui.common.UIControlCreator;
@@ -37,6 +38,7 @@ public class UIService {
     private final MenuBarBuilder menuBarBuilder;
     private final MainEventHandlerService mainEventHandlerService;
     private final TextOverlayEventHandlerService textOverlayEventHandlerService;
+    private final UndoService undoService;
 
     private ImageView imageView;
 
@@ -111,7 +113,7 @@ public class UIService {
 
     private void setupKeyboardShortcuts(Scene scene) {
         KeyCombination undoShortcut = new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN);
-        scene.getAccelerators().put(undoShortcut, mainEventHandlerService::handleUndo);
+        scene.getAccelerators().put(undoShortcut, () -> undoService.handleUndo(mainEventHandlerService));
     }
 
     private void loadAppIcon(Stage primaryStage) {

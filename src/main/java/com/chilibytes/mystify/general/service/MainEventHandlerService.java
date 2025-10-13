@@ -8,7 +8,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +57,7 @@ public class MainEventHandlerService {
         commonApplicationButtons.saveButton.setOnAction(e -> handleSaveImage(stage));
         commonApplicationButtons.resetButton.setOnAction(e -> handleResetImage());
         commonApplicationButtons.clearButton.setOnAction(e -> handleClearImage());
-        commonApplicationButtons.undoButton.setOnAction(e -> handleUndo());
+        commonApplicationButtons.undoButton.setOnAction(e -> undoService.handleUndo(this));
 
         imageView.setOnMouseReleased(e -> blurProcessorService.setDragging(Boolean.FALSE));
         imageView.setOnMouseExited(e -> blurProcessorService.setDragging(Boolean.FALSE));
@@ -102,26 +101,8 @@ public class MainEventHandlerService {
         }
     }
 
-    public void handleUndo() {
-        if (undoService.canUndo()) {
-            currentImage = undoService.undo(currentImage);
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-            principalLayoutsBuilder.updateUndoPanelButtonState(undoService.canUndo());
-        }
-    }
-
     public void handleClearImage() {
-        if (currentImage != null) {
-            undoService.saveState(currentImage);
-            currentImage = blurProcessorService.createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-
-            ((Pane)imageView.getParent())
-                    .getChildren()
-                    .removeIf(control -> !(control instanceof  ImageView));
-        }
+        multimediaFileService.clearImage(this);
     }
 
     public void handleResetImage() {

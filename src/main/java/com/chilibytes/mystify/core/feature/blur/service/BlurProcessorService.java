@@ -1,12 +1,15 @@
 package com.chilibytes.mystify.core.feature.blur.service;
 
+import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.general.service.UndoService;
-import com.chilibytes.mystify.config.service.ApplicationOptionManagerService;
 import com.chilibytes.mystify.ui.MystifyApplication;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import lombok.Getter;
@@ -92,18 +95,6 @@ public class BlurProcessorService {
         return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
     }
 
-    public WritableImage createBlankImage(int width, int height) {
-        WritableImage blankImage = new WritableImage(width, height);
-        var writer = blankImage.getPixelWriter();
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                writer.setColor(x, y, Color.TRANSPARENT);
-            }
-        }
-
-        return blankImage;
-    }
 
     public void handleApplyBlur(MouseEvent event, MainEventHandlerService mainEventHandlerService) {
         ImageView imageView = mainEventHandlerService.getImageView();

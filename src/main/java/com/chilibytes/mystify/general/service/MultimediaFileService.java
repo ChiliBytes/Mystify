@@ -5,6 +5,10 @@ import com.chilibytes.mystify.core.feature.imageoverlay.service.ImageOverlayServ
 import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -17,7 +21,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,6 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
@@ -38,11 +42,13 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 public class MultimediaFileService {
 
     private String defaultExtension = "png";
-    private final ApplicationProperties applicationProperties;
+
     private List<String> imagesAllowedExtensions;
     private List<String> imagesAllowedWildCards;
 
+    private final ApplicationProperties applicationProperties;
     private final ImageOverlayService imageOverlayService;
+    private final UndoService undoService;
 
     @PostConstruct
     private void getAllowedExtensions() {
@@ -227,5 +233,31 @@ public class MultimediaFileService {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public void clearImage(MainEventHandlerService mainEventHandlerService) {
+        WritableImage currentImage = mainEventHandlerService.getCurrentImage();
+        if (!Objects.isNull(currentImage)) {
+            undoService.saveState(currentImage);
+            WritableImage blankImage = createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
+            mainEventHandlerService.setCurrentImage(blankImage);
+            mainEventHandlerService.getImageView().setImage(blankImage);
+            ((Pane) mainEventHandlerService.getImageView().getParent())
+                    .getChildren()
+                    .removeIf(control -> !(control instanceof ImageView));
+        }
+    }
+
+    private WritableImage createBlankImage(int width, int height) {
+        WritableImage blankImage = new WritableImage(width, height);
+        var writer = blankImage.getPixelWriter();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                writer.setColor(x, y, Color.TRANSPARENT);
+            }
+        }
+
+        return blankImage;
     }
 }
