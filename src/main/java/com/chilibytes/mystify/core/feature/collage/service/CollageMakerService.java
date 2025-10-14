@@ -1,25 +1,17 @@
 package com.chilibytes.mystify.core.feature.collage.service;
 
-import com.chilibytes.mystify.general.service.ScriptProcessorService;
-import com.chilibytes.mystify.general.service.FileService;
 import com.chilibytes.mystify.config.ApplicationProperties;
+import com.chilibytes.mystify.general.service.DirectoryFileProcessor;
+import com.chilibytes.mystify.general.service.ImageProcessor;
+import com.chilibytes.mystify.general.service.ScriptProcessorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
 import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
@@ -31,11 +23,12 @@ public class CollageMakerService {
 
     private final ScriptProcessorService scriptProcessorService;
     private final ApplicationProperties applicationProperties;
-    private final FileService fileService;
+    private final ImageProcessor imageProcessor;
+    private final DirectoryFileProcessor directoryFileProcessor;
 
     private static final String PYTHON_COLLAGE_SCRIPT_FILE = "collage-maker/collage_maker.py";
     private static final String PYTHON_COLLAGE_SCRIPT_NAME = "Collage Maker";
-    private static final int DEFAULT_COLLAGE_WIDTH_SIZE = 2000; //This affects the resolution
+    private static final int DEFAULT_COLLAGE_WIDTH_SIZE = 1000; //This affects the resolution
     private static final int DEFAULT_COLLAGE_INITIAL_HEIGHT_SIZE = 1000;
     private static final String DEFAULT_COLLAGE_PREFIX_NAME = "My-Collage";
     private static final int MAX_IMAGES_FOR_STANDARD_MODE = 6;
@@ -80,7 +73,7 @@ public class CollageMakerService {
             inputFolder = inputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultInput() : inputFolder;
             outputFolder = outputFolder.isBlank() ? applicationProperties.getAppWorkspaceDefaultOutput() : outputFolder;
 
-            this.imagesInDirectory = fileService.getAllImagesFromDirectory(inputFolder);
+            this.imagesInDirectory = imageProcessor.getAllImagesFromDirectory(inputFolder);
             String collagePrefix = getCollagesPrefix(customCollagePrefix);
 
             // Do not split in different collages when there are few images
@@ -113,10 +106,10 @@ public class CollageMakerService {
 
         //Process the collage
         collagePartsHashMap.forEach((key, value) ->
-                createTemporalWorkingDirectory(inputFolder, value).ifPresentOrElse(
+                directoryFileProcessor.createTemporalWorkingDirectory(inputFolder, value).ifPresentOrElse(
                         directoryName -> {
                             createStandardCollage(directoryName, outputFolder, customCollagePrefix + "-" + (key + 1) + DEFAULT_COLLAGE_EXTENSION);
-                            removeTemporalWorkingDirectory(directoryName);
+                            directoryFileProcessor.removeTemporalWorkingDirectory(directoryName);
                         }, () -> showError("Failed to create collages due to an error while creating the workspace")
                 )
         );
@@ -127,25 +120,6 @@ public class CollageMakerService {
             return DEFAULT_COLLAGE_PREFIX_NAME;
         }
         return originalPrefix;
-    }
-
-    private Optional<String> createTemporalWorkingDirectory(String baseInputFolder, List<String> currentImagesForCollage) {
-        File workingDirectory = new File(baseInputFolder + "temp");
-
-        if (workingDirectory.mkdir()) {
-            String newFolderName = workingDirectory + "/";
-            for (String s : currentImagesForCollage) {
-                Path source = Paths.get(baseInputFolder + s);
-                Path destination = Paths.get(newFolderName + s);
-                try {
-                    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    log.error("IOException on createTemporalWorkingDirectory(): {}", e.getMessage(), e);
-                }
-            }
-            return Optional.of(newFolderName);
-        }
-        return Optional.empty();
     }
 
     private Map<Integer, List<String>> createMapWithOptimalDistribution(int totalItems, List<String> allImages) {
@@ -166,23 +140,6 @@ public class CollageMakerService {
             }
         }
         return collagePartsHashMap;
-    }
-
-    private void removeTemporalWorkingDirectory(String temporalWorkingDirectoryName) {
-        Path carpetaPath = Paths.get(temporalWorkingDirectoryName);
-
-        try (Stream<Path> stream = Files.walk(carpetaPath)) {
-            stream.sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            log.error("IOException on removeTemporalWorkingDirectory: {} ", e.getMessage(), e);
-                        }
-                    });
-        } catch (Exception e) {
-            log.error("Error on removeTemporalWorkingDirectory: {} ", e.getMessage(), e);
-        }
     }
 
     private void computeItems(int totalItems, int imagesPerCollage) {

@@ -1,6 +1,6 @@
 package com.chilibytes.mystify.core.feature.blur.service;
 
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class AutoBlurEventHandlerService {
 
     private final BlurProcessorService blurProcessorService;
-    private final CommonEventHandlerService commonEventHandlerService;
+    private final MainEventHandlerService mainEventHandlerService;
 
     public record AutoBlurDialogControls(Label lblTitle, Slider sldBlurLevel, Button btnOk, Button btnCancel) {
 
@@ -23,11 +23,11 @@ public class AutoBlurEventHandlerService {
 
     public void setupEventHandlers(Stage stage, AutoBlurDialogControls controls) {
         controls.sldBlurLevel.valueProperty().addListener((obs, oldVal, newVal) ->
-                blurProcessorService.applyFullBlur(commonEventHandlerService, newVal.intValue()));
+                blurProcessorService.applyFullBlur(mainEventHandlerService, newVal.intValue()));
 
         controls.btnOk.setOnAction(e -> stage.close());
         controls.btnCancel.setOnAction(e -> {
-            commonEventHandlerService.handleResetImage();
+            mainEventHandlerService.handleResetImage();
             stage.close();
         });
     }

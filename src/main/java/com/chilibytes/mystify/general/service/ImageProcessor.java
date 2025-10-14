@@ -1,23 +1,20 @@
 package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.config.ApplicationProperties;
-import com.chilibytes.mystify.core.feature.imageoverlay.service.ImageOverlayService;
 import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,22 +24,18 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
-import static com.chilibytes.mystify.ui.common.CustomDialog.showError;
-
-@Getter
+@Component
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class FileService {
+public class ImageProcessor {
 
+    @Getter
     private String defaultExtension = "png";
-    private final ApplicationProperties applicationProperties;
+
     private List<String> imagesAllowedExtensions;
     private List<String> imagesAllowedWildCards;
-
-    private final ImageOverlayService imageOverlayService;
+    private final ApplicationProperties applicationProperties;
 
     @PostConstruct
     private void getAllowedExtensions() {
@@ -50,56 +43,7 @@ public class FileService {
         this.imagesAllowedWildCards = applicationProperties.getAppImagesAllowedWildCards(this.imagesAllowedExtensions);
     }
 
-    private List<String> getAllowedWildcardsPart(String extension) {
-        return imagesAllowedWildCards.stream()
-                .filter(ext -> ext.equalsIgnoreCase(extension))
-                .map(ext -> "*." + ext)
-                .toList();
-    }
-
-    public Optional<Image> loadImage(Stage stage) {
-
-        FileChooser fileChooser = createImageFileChooser();
-        File file = fileChooser.showOpenDialog(stage);
-
-        if (file != null) {
-            try {
-                Image image = new Image(file.toURI().toString());
-                setDefaultExtensionFromFile(file);
-                return Optional.of(image);
-            } catch (Exception e) {
-                log.error("Error on loadImage(): {}", e.getMessage());
-                showError("Load Image", "An Error has occurred while loading the image", e);
-            }
-        }
-        return Optional.empty();
-    }
-
-    public boolean saveImage(Stage stage, Image image, String defaultExtension) {
-        FileChooser fileChooser = createSaveFileChooser(defaultExtension);
-        File file = fileChooser.showSaveDialog(stage);
-
-        if (file != null) {
-            try {
-                Image imageToSave = SharedConstant.isMultiLayerImage() ?
-                        imageOverlayService.unifyImage() :
-                        image;
-                saveImageToFile(imageToSave, file);
-                SharedConstant.setMultiLayerImage(false);
-                return true;
-            } catch (IOException e) {
-                log.error("IOException on saveImage(): {}", e.getMessage(), e);
-                showError("Save Image", "An IOException has occurred while saving the image", e);
-
-            } catch (Exception ex) {
-                log.error("Error on saveImage(): {}", ex.getMessage(), ex);
-                showError("Save Image", "An error has occurred while saving the image", ex);
-            }
-        }
-        return false;
-    }
-
-    private FileChooser createImageFileChooser() {
+    public FileChooser createImageFileChooser() {
         var fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Images", this.imagesAllowedWildCards)
@@ -107,7 +51,7 @@ public class FileService {
         return fileChooser;
     }
 
-    private FileChooser createSaveFileChooser(String defaultExt) {
+    public FileChooser createSaveFileChooser(String defaultExt) {
         var fileChooser = new FileChooser();
         FileChooser.ExtensionFilter defaultFilter = new FileChooser.ExtensionFilter(
                 defaultExt.toUpperCase() + " Files", "*." + defaultExt
@@ -127,7 +71,7 @@ public class FileService {
         return fileChooser;
     }
 
-    private void saveImageToFile(Image image, File file) throws IOException {
+    public void saveImageToFile(Image image, File file) throws IOException {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
         String formatName = getFileExtension(file).toLowerCase();
 
@@ -138,6 +82,56 @@ public class FileService {
             saveWithCompression(bufferedImage, file, 1.0f);
         }
     }
+
+    public void setDefaultExtensionFromFile(File file) {
+        String loadedExtension = getFileExtension(file);
+        if (this.imagesAllowedExtensions.contains(loadedExtension)) {
+            defaultExtension = loadedExtension;
+        }
+    }
+
+    public List<String> getAllImagesFromDirectory(String collagePath) {
+        File dir = new File(collagePath);
+        List<String> imageList = new ArrayList<>();
+        if (!dir.exists() || !dir.isDirectory()) {
+            log.warn("Directory does not exists: {}", collagePath);
+            return imageList;
+        }
+
+        File[] imageFiles = dir.listFiles((file, name) -> {
+            String lowerName = name.toLowerCase();
+            return lowerName.endsWith(".jpg") ||
+                    lowerName.endsWith(".jpeg") ||
+                    lowerName.endsWith(".png");
+        });
+
+        if (imageFiles != null) {
+            Arrays.sort(imageFiles, Comparator.comparing(File::getName,
+                    Comparator.comparingInt(this::extractNumber)));
+
+            for (File file : imageFiles) {
+                imageList.add(file.getName());
+            }
+        }
+        return imageList;
+    }
+
+    private List<String> getAllowedWildcardsPart(String extension) {
+        return imagesAllowedWildCards.stream()
+                .filter(ext -> ext.equalsIgnoreCase(extension))
+                .map(ext -> "*." + ext)
+                .toList();
+    }
+
+    private int extractNumber(String name) {
+        try {
+            String num = name.replaceAll("\\D+", "");
+            return num.isEmpty() ? 0 : Integer.parseInt(num);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
 
     private BufferedImage createOptimizedImage(BufferedImage source) {
         BufferedImage result = new BufferedImage(
@@ -154,6 +148,12 @@ public class FileService {
             graphics2.dispose();
         }
         return result;
+    }
+
+    private String getFileExtension(File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? defaultExtension : fileName.substring(dotIndex + 1);
     }
 
     private void saveWithCompression(BufferedImage image, File file, float quality) throws IOException {
@@ -179,53 +179,5 @@ public class FileService {
             }
         }
         ImageIO.write(image, format, file);
-    }
-
-    private String getFileExtension(File file) {
-        String fileName = file.getName();
-        int dotIndex = fileName.lastIndexOf('.');
-        return (dotIndex == -1) ? defaultExtension : fileName.substring(dotIndex + 1);
-    }
-
-    private void setDefaultExtensionFromFile(File file) {
-        String loadedExtension = getFileExtension(file);
-        if (this.imagesAllowedExtensions.contains(loadedExtension)) {
-            defaultExtension = loadedExtension;
-        }
-    }
-
-    public List<String> getAllImagesFromDirectory(String collagePath) {
-        File dir = new File(collagePath);
-        List<String> imageList = new ArrayList<>();
-        if (!dir.exists() || !dir.isDirectory()) {
-            log.warn("Directory does not exists: {}", collagePath);
-            return imageList;
-        }
-
-        File[] imageFiles = dir.listFiles((file, name) -> {
-            String lowerName = name.toLowerCase();
-            return lowerName.endsWith(".jpg") ||
-                    lowerName.endsWith(".jpeg") ||
-                    lowerName.endsWith(".png");
-        });
-
-        if (imageFiles != null) {
-            Arrays.sort(imageFiles, Comparator.comparing(File::getName,
-                    Comparator.comparingInt(FileService::extractNumber)));
-
-            for (File file : imageFiles) {
-                imageList.add(file.getName());
-            }
-        }
-        return imageList;
-    }
-
-    private static int extractNumber(String name) {
-        try {
-            String num = name.replaceAll("\\D+", "");
-            return num.isEmpty() ? 0 : Integer.parseInt(num);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 }

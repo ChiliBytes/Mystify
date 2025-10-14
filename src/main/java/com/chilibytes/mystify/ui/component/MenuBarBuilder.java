@@ -4,7 +4,7 @@ import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
 import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
 import com.chilibytes.mystify.core.feature.imageoverlay.ui.ImageOverlayDialog;
 import com.chilibytes.mystify.core.feature.textoverlay.ui.FontSettingsDialog;
-import com.chilibytes.mystify.general.service.CommonEventHandlerService;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
 import com.chilibytes.mystify.core.feature.pdf.ui.PdfMakerDialog;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MenuBarBuilder {
 
-    private final CommonEventHandlerService commonEventHandlerService;
+    private final MainEventHandlerService mainEventHandlerService;
     private final CustomBlurDialog customBlurDialog;
     private final CollageDialog collageDialog;
     private final PdfMakerDialog pdfMakerDialog;
@@ -40,20 +40,20 @@ public class MenuBarBuilder {
 
     public MenuBar createMenuBar(Stage primaryStage) {
         MenuItem loadImageItem = new MenuItem("Load Image");
-        loadImageItem.setOnAction(e -> commonEventHandlerService.handleLoadImage(primaryStage));
+        loadImageItem.setOnAction(e -> mainEventHandlerService.handleLoadImage(primaryStage));
 
         MenuItem saveImageItem = new MenuItem("Save Image");
-        saveImageItem.setOnAction(e -> commonEventHandlerService.handleSaveImage(primaryStage));
+        saveImageItem.setOnAction(e -> mainEventHandlerService.handleSaveImage(primaryStage));
 
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().addAll(loadImageItem, saveImageItem);
 
 
         MenuItem resetImageItem = new MenuItem("Reset Image");
-        resetImageItem.setOnAction(e -> commonEventHandlerService.handleResetImage());
+        resetImageItem.setOnAction(e -> mainEventHandlerService.handleResetImage());
 
         MenuItem clearImageItem = new MenuItem("Clear Image");
-        clearImageItem.setOnAction(e -> commonEventHandlerService.handleClearImage());
+        clearImageItem.setOnAction(e -> mainEventHandlerService.handleClearImage());
 
         Menu editMenu = new Menu("Edit");
         editMenu.getItems().addAll(resetImageItem, clearImageItem);

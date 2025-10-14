@@ -1,14 +1,11 @@
 package com.chilibytes.mystify.general.service;
 
 import com.chilibytes.mystify.core.feature.blur.service.BlurProcessorService;
-import com.chilibytes.mystify.core.service.ImageService;
-import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +18,12 @@ import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CommonEventHandlerService {
+public class MainEventHandlerService {
 
     private final BlurProcessorService blurProcessorService;
     private final ZoomService zoomService;
-    private final FileService fileService;
     private final ImageService imageService;
     private final UndoService undoService;
-    private final PrincipalLayoutsBuilder principalLayoutsBuilder;
 
     @Setter
     @Getter
@@ -58,7 +53,7 @@ public class CommonEventHandlerService {
         commonApplicationButtons.saveButton.setOnAction(e -> handleSaveImage(stage));
         commonApplicationButtons.resetButton.setOnAction(e -> handleResetImage());
         commonApplicationButtons.clearButton.setOnAction(e -> handleClearImage());
-        commonApplicationButtons.undoButton.setOnAction(e -> handleUndo());
+        commonApplicationButtons.undoButton.setOnAction(e -> undoService.handleUndo(this));
 
         imageView.setOnMouseReleased(e -> blurProcessorService.setDragging(Boolean.FALSE));
         imageView.setOnMouseExited(e -> blurProcessorService.setDragging(Boolean.FALSE));
@@ -71,29 +66,16 @@ public class CommonEventHandlerService {
     }
 
     public void handleLoadImage(Stage stage) {
-        java.util.Optional<Image> loadedImage = fileService.loadImage(stage);
+        java.util.Optional<Image> loadedImage = imageService.loadImage(stage);
         loadedImage.ifPresent(image -> {
             this.originalImage = image;
-            processLoadedImage(image);
+            imageService.processLoadedImage(this);
         });
-    }
-
-    private void processLoadedImage(Image image) {
-        this.originalImage = image;
-        currentImage = imageService.createWritableImageCopy(image);
-        setCurrentImage(currentImage);
-        imageView.setImage(currentImage);
-        zoomService.resetZoom();
-        zoomService.applyZoom(imageView);
-        principalLayoutsBuilder.getOuterZoomSlider().setValue(100);
-        undoService.clearHistory();
-        principalLayoutsBuilder.updateUndoPanelButtonState(false);
-        this.setImageView(imageView);
     }
 
     public void handleSaveImage(Stage stage) {
         if (currentImage != null) {
-            boolean saved = fileService.saveImage(stage, currentImage, fileService.getDefaultExtension());
+            boolean saved = imageService.saveImage(stage, currentImage, imageService.getDefaultExtension());
             if (saved) {
                 showSuccess("Image saved successfully");
             }
@@ -102,38 +84,15 @@ public class CommonEventHandlerService {
         }
     }
 
-    public void handleUndo() {
-        if (undoService.canUndo()) {
-            currentImage = undoService.undo(currentImage);
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-            principalLayoutsBuilder.updateUndoPanelButtonState(undoService.canUndo());
-        }
-    }
-
     public void handleClearImage() {
-        if (currentImage != null) {
-            undoService.saveState(currentImage);
-            currentImage = blurProcessorService.createBlankImage((int) currentImage.getWidth(), (int) currentImage.getHeight());
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-
-            ((Pane)imageView.getParent())
-                    .getChildren()
-                    .removeIf(control -> !(control instanceof  ImageView));
-        }
+        imageService.clearImage(this);
     }
 
     public void handleResetImage() {
-        if (originalImage != null) {
-            undoService.saveState(currentImage);
-            currentImage = imageService.createWritableImageCopy(originalImage);
-            setCurrentImage(currentImage);
-            imageView.setImage(currentImage);
-        }
+        imageService.handleResetImage(this);
     }
 
     public WritableImage handleCreateOriginalImageCopy() {
-        return imageService.createWritableImageCopy(this.originalImage);
+        return imageService.createWritableImageCopy(this);
     }
 }

@@ -1,16 +1,21 @@
 package com.chilibytes.mystify.general.service;
 
+import com.chilibytes.mystify.ui.component.PrincipalLayoutsBuilder;
 import javafx.scene.image.WritableImage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 @Service
+@RequiredArgsConstructor
 public class UndoService {
 
     private final Deque<WritableImage> undoStack = new ArrayDeque<>();
     private static final int MAX_UNDO_HISTORY = 20;
+
+    private final PrincipalLayoutsBuilder principalLayoutsBuilder;
 
     public void saveState(WritableImage image) {
         if (image != null) {
@@ -28,6 +33,14 @@ public class UndoService {
             return undoStack.pop();
         }
         return currentImage;
+    }
+
+    public void handleUndo(MainEventHandlerService mainEventHandlerService) {
+        if (canUndo()) {
+            mainEventHandlerService.setCurrentImage(undo(mainEventHandlerService.getCurrentImage()));
+            mainEventHandlerService.getImageView().setImage(mainEventHandlerService.getCurrentImage());
+            principalLayoutsBuilder.updateUndoPanelButtonState(canUndo());
+        }
     }
 
     public boolean canUndo() {
