@@ -22,7 +22,7 @@ public class MainEventHandlerService {
 
     private final BlurProcessorService blurProcessorService;
     private final ZoomService zoomService;
-    private final MultimediaFileService multimediaFileService;
+    private final ImageService imageService;
     private final UndoService undoService;
 
     @Setter
@@ -66,16 +66,16 @@ public class MainEventHandlerService {
     }
 
     public void handleLoadImage(Stage stage) {
-        java.util.Optional<Image> loadedImage = multimediaFileService.loadImage(stage);
+        java.util.Optional<Image> loadedImage = imageService.loadImage(stage);
         loadedImage.ifPresent(image -> {
             this.originalImage = image;
-            multimediaFileService.processLoadedImage(this);
+            imageService.processLoadedImage(this);
         });
     }
 
     public void handleSaveImage(Stage stage) {
         if (currentImage != null) {
-            boolean saved = multimediaFileService.saveImage(stage, currentImage, multimediaFileService.getDefaultExtension());
+            boolean saved = imageService.saveImage(stage, currentImage, imageService.getDefaultExtension());
             if (saved) {
                 showSuccess("Image saved successfully");
             }
@@ -85,14 +85,14 @@ public class MainEventHandlerService {
     }
 
     public void handleClearImage() {
-        multimediaFileService.clearImage(this);
+        imageService.clearImage(this);
     }
 
     public void handleResetImage() {
-        multimediaFileService.handleResetImage(this);
+        imageService.handleResetImage(this);
     }
 
     public WritableImage handleCreateOriginalImageCopy() {
-        return multimediaFileService.createWritableImageCopy(this);
+        return imageService.createWritableImageCopy(this);
     }
 }

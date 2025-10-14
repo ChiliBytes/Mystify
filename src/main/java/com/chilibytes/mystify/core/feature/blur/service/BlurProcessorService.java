@@ -33,7 +33,6 @@ public class BlurProcessorService {
     @Setter
     private boolean isDragging = false;
 
-
     public void applyCircularBlur(WritableImage image, int centerX, int centerY, int radius, int blurRadius) {
 
         var reader = image.getPixelReader();
@@ -60,7 +59,6 @@ public class BlurProcessorService {
                                 })
                 );
     }
-
 
     public Color calculateBlurredColor(WritableImage image, int x, int y, int radius, PixelReader reader) {
         if (radius <= 1) return reader.getColor(x, y);
@@ -95,7 +93,6 @@ public class BlurProcessorService {
         return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
     }
 
-
     public void handleApplyBlur(MouseEvent event, MainEventHandlerService mainEventHandlerService) {
         ImageView imageView = mainEventHandlerService.getImageView();
         WritableImage currentImage = mainEventHandlerService.getCurrentImage();
@@ -114,8 +111,7 @@ public class BlurProcessorService {
                 int brushSize = MystifyApplication.controlSettingsCache.getBrushSize();
                 int blurRadius = MystifyApplication.controlSettingsCache.getBlurLevel();
 
-                applyCircularBlur(currentImage, (int) imageX, (int) imageY,
-                        brushSize, blurRadius);
+                applyCircularBlur(currentImage, (int) imageX, (int) imageY, brushSize, blurRadius);
             }
         }
     }
@@ -176,12 +172,12 @@ public class BlurProcessorService {
         if (blurLevel == 0) {
             eventHandlerService.handleResetImage();
         }
+
         WritableImage copy = eventHandlerService.handleCreateOriginalImageCopy();
         WritableImage newImage = blurEntirePicture(copy, blurLevel);
         eventHandlerService.setCurrentImage(newImage);
         eventHandlerService.getImageView().setImage(newImage);
     }
-
 
     public WritableImage blurEntirePicture(Image image, double blurRadius) {
         if (image == null || blurRadius <= 0) {
@@ -194,12 +190,9 @@ public class BlurProcessorService {
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
 
-        WritableImage blurredImage = new WritableImage(
-                (int) image.getWidth(),
-                (int) image.getHeight()
-        );
-
+        WritableImage blurredImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
         tempView.snapshot(params, blurredImage);
+
         return blurredImage;
     }
 }
