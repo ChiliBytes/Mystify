@@ -4,7 +4,7 @@ import com.chilibytes.mystify.core.BaseDialog;
 import com.chilibytes.mystify.core.feature.grayscale.service.GrayScaleEventHandlerService;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class GrayScaleDialog extends BaseDialog {
     }
 
     @Override
-    public List<VBox> configureDialogLayout() {
+    public List<Pane> configureDialogLayout() {
         return List.of(
                 createVbox(lblScaleFactor, sldScaleFactor)
         );

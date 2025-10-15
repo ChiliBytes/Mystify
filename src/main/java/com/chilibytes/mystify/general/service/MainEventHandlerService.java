@@ -13,6 +13,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.chilibytes.mystify.ui.common.CustomDialog.showSuccess;
 
 @Slf4j
@@ -36,8 +38,10 @@ public class MainEventHandlerService {
     @Getter
     private Image originalImage;
 
-    public record CommonApplicationButtons(Button loadButton, Button saveButton,
-                                           Button resetButton, Button clearButton, Button undoButton) {
+    public record CommonApplicationButtons(Button btnLoadImage, Button btnSaveImage,
+                                           Button btnResetImage, Button btnClearImage,
+                                           Button btnUndo, Button btnRotateClockwise,
+                                           Button btnTest) {
 
     }
 
@@ -49,11 +53,16 @@ public class MainEventHandlerService {
                                    CommonApplicationControls commonApplicationControls) {
         this.imageView = commonApplicationControls.imageView;
 
-        commonApplicationButtons.loadButton.setOnAction(e -> handleLoadImage(stage));
-        commonApplicationButtons.saveButton.setOnAction(e -> handleSaveImage(stage));
-        commonApplicationButtons.resetButton.setOnAction(e -> handleResetImage());
-        commonApplicationButtons.clearButton.setOnAction(e -> handleClearImage());
-        commonApplicationButtons.undoButton.setOnAction(e -> undoService.handleUndo(this));
+        commonApplicationButtons.btnLoadImage.setOnAction(e -> handleLoadImage(stage));
+        commonApplicationButtons.btnSaveImage.setOnAction(e -> handleSaveImage(stage));
+        commonApplicationButtons.btnResetImage.setOnAction(e -> handleResetImage());
+        commonApplicationButtons.btnClearImage.setOnAction(e -> handleClearImage());
+        commonApplicationButtons.btnUndo.setOnAction(e -> handleUndo());
+        commonApplicationButtons.btnRotateClockwise.setOnAction(e -> handleRotateImage());
+
+        commonApplicationButtons.btnTest.setOnAction(e -> {
+
+        });
 
         imageView.setOnMouseReleased(e -> blurProcessorService.setDragging(Boolean.FALSE));
         imageView.setOnMouseExited(e -> blurProcessorService.setDragging(Boolean.FALSE));
@@ -66,7 +75,7 @@ public class MainEventHandlerService {
     }
 
     public void handleLoadImage(Stage stage) {
-        java.util.Optional<Image> loadedImage = imageService.loadImage(stage);
+        Optional<Image> loadedImage = imageService.loadImage(stage);
         loadedImage.ifPresent(image -> {
             this.originalImage = image;
             imageService.processLoadedImage(this);
@@ -94,5 +103,13 @@ public class MainEventHandlerService {
 
     public WritableImage handleCreateOriginalImageCopy() {
         return imageService.createWritableImageCopy(this);
+    }
+
+    private void handleUndo() {
+        undoService.handleUndo(this);
+    }
+
+    private void handleRotateImage() {
+        imageService.rotateImage(this);
     }
 }

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static com.chilibytes.mystify.ui.common.UIControlCreator.createHBox;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createFooter;
+import static com.chilibytes.mystify.ui.common.UIControlCreator.createHBox;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createSlider;
 import static com.chilibytes.mystify.ui.common.UIControlCreator.createVBoxForLeftPanel;
 
@@ -32,9 +32,11 @@ public class PrincipalLayoutsBuilder {
     @Getter
     private Slider outerZoomSlider;
 
+    //TODO: Fix the 7+ parameter issue
     public VBox createLeftControlsPanel(Button loadButton, Button saveButton,
                                         Button resetButton, Button clearButton,
-                                        Button undoButton, Button btnTextOverlay) {
+                                        Button undoButton, Button btnTextOverlay,
+                                        Button btnRotateClockwise, Button btnTest) {
 
         HBox buttonsRow1 = createHBox(loadButton);
         HBox buttonsRow2 = createHBox(saveButton);
@@ -42,10 +44,16 @@ public class PrincipalLayoutsBuilder {
         HBox buttonsRow4 = createHBox(clearButton);
         HBox buttonsRow5 = createHBox(undoButton);
         HBox buttonsRow6 = createHBox(btnTextOverlay);
+        HBox buttonsRow7 = createHBox(btnRotateClockwise);
+        HBox buttonsRow8 = createHBox(btnTest);
 
         this.undoButtonReference = undoButton;
 
-        this.leftPaneControls = createVBoxForLeftPanel(buttonsRow1, buttonsRow2, buttonsRow3, buttonsRow4, buttonsRow5, buttonsRow6);
+        this.leftPaneControls = createVBoxForLeftPanel(buttonsRow1, buttonsRow2,
+                buttonsRow3, buttonsRow4,
+                buttonsRow5, buttonsRow6,
+                buttonsRow7, buttonsRow8);
+
         return this.leftPaneControls;
     }
 

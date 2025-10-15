@@ -6,7 +6,7 @@ import com.chilibytes.mystify.core.feature.collage.service.CollageEventHandlerSe
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class CollageDialog extends BaseDialog {
     }
 
     @Override
-    public List<VBox> configureDialogLayout() {
+    public List<Pane> configureDialogLayout() {
         return List.of(
                 createVbox(this.btnInputFolder, this.txtInputFolder),
                 createVbox(this.btnOutputFolder, this.txtOutputFolder),

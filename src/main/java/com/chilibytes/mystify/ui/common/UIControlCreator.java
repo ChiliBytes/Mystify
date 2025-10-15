@@ -17,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,6 +43,7 @@ public class UIControlCreator {
     private static final int DEFAULT_TEXTBOX_HEIGHT = 28;
     private static final int DEFAULT_COLOR_PICKER_WIDTH = 250;
     private static final int DEFAULT_COMBO_BOX_WIDTH = 100;
+    private static final int DEFAULT_IMAGE_PREVIEW_SIZE = 300;
 
     // Adding this initialization so we can access the non-static field applicationProperties from a custom holder
     @PostConstruct
@@ -230,5 +232,17 @@ public class UIControlCreator {
         VBox dialogGroup = new VBox(5, nodes);
         dialogGroup.setAlignment(Pos.CENTER_LEFT);
         return dialogGroup;
+    }
+
+    public static Pane createImageViewForThumbnail(ImageView originalImageView) {
+        Pane pnImgContainer = new Pane();
+
+        originalImageView.setPreserveRatio(true);
+        originalImageView.fitWidthProperty().bind(pnImgContainer.widthProperty());
+        originalImageView.fitHeightProperty().bind(pnImgContainer.heightProperty());
+
+        pnImgContainer.getChildren().add(originalImageView);
+        pnImgContainer.setMaxSize(DEFAULT_IMAGE_PREVIEW_SIZE, DEFAULT_IMAGE_PREVIEW_SIZE);
+        return pnImgContainer;
     }
 }
