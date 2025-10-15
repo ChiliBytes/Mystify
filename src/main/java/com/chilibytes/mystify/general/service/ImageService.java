@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -51,6 +54,15 @@ public class ImageService {
             }
         }
         return Optional.empty();
+    }
+
+    public static String getImagePath(Image image) {
+        try {
+            return Paths.get(new URI(image.getUrl())).toAbsolutePath().toString();
+        } catch (URISyntaxException ex) {
+            log.error("Error on getImagePath(): {}", ex.getMessage(), ex);
+            return "";
+        }
     }
 
     public void processLoadedImage(MainEventHandlerService mainEventHandlerService) {
@@ -129,8 +141,18 @@ public class ImageService {
         return copy;
     }
 
+    public void rotateImage(MainEventHandlerService mainEventHandlerService) {
+        WritableImage rotatedImage = ImageProcessor.rotateImageClockwise(mainEventHandlerService.getImageView());
+        mainEventHandlerService.getImageView().setImage(rotatedImage);
+        mainEventHandlerService.setCurrentImage(rotatedImage);
+    }
+
     public String getDefaultExtension() {
         return imageProcessor.getDefaultExtension();
+    }
+
+    public WritableImage downgradeImage(String pathToHDImage, int reduceTo) {
+        return ImageProcessor.downgradeImage(pathToHDImage, reduceTo);
     }
 
     private WritableImage createBlankImage(int width, int height) {

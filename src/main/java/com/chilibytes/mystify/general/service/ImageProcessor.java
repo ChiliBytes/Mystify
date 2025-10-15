@@ -4,6 +4,10 @@ import com.chilibytes.mystify.config.ApplicationProperties;
 import jakarta.annotation.PostConstruct;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -179,5 +184,81 @@ public class ImageProcessor {
             }
         }
         ImageIO.write(image, format, file);
+    }
+
+    public static WritableImage rotateImageClockwise(ImageView imageView) {
+        if (imageView == null || imageView.getImage() == null) {
+            throw new NullPointerException("No imageview defined");
+        }
+
+        Image originalImage = imageView.getImage();
+        int width = (int) originalImage.getWidth();
+        int height = (int) originalImage.getHeight();
+
+        // Create a new Image switching the original dimensions (now the height is the width)
+        WritableImage rotatedImage = new WritableImage(height, width);
+        PixelReader pixelReader = originalImage.getPixelReader();
+        PixelWriter pixelWriter = rotatedImage.getPixelWriter();
+
+        // Rotate 90 degrees (Clockwise)
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Clockwise rotation formula
+                int newX = height - 1 - y;
+                pixelWriter.setArgb(newX, x, pixelReader.getArgb(x, y));
+            }
+        }
+        return rotatedImage;
+    }
+
+
+    public static WritableImage downgradeImage(String pathToHDImage, int reduceTo) {
+        if (pathToHDImage == null || reduceTo <= 0 || reduceTo > 100) {
+            throw new IllegalArgumentException("Scale factor must be between 1 and 100");
+        }
+
+        try {
+            File file = new File(pathToHDImage.replace("file:", ""));
+            if (!file.exists()) {
+                throw new IllegalArgumentException("File not found: " + pathToHDImage);
+            }
+
+            try (FileInputStream fis = new FileInputStream(file)) {
+                // Calculate dimensions directly
+                Image originalImage = new Image(fis);
+
+                double originalWidth = originalImage.getWidth();
+                double originalHeight = originalImage.getHeight();
+
+                // Calculate new dimensions
+                double scale = reduceTo / 100.0;
+                int targetWidth = Math.max(1, (int) (originalWidth * scale));
+                int targetHeight = Math.max(1, (int) (originalHeight * scale));
+
+                log.info("Resizing: {}x{} -> {}x{} ({})", (int) originalWidth, (int) originalHeight, targetWidth, targetHeight, reduceTo);
+
+                // Load resized image
+                try (FileInputStream fis2 = new FileInputStream(file)) {
+                    Image resizedImage = new Image(fis2, targetWidth, targetHeight, true, true);
+
+                    // Convert to WritableImage
+                    WritableImage writableImage = new WritableImage(targetWidth, targetHeight);
+                    PixelWriter writer = writableImage.getPixelWriter();
+                    PixelReader reader = resizedImage.getPixelReader();
+
+                    for (int y = 0; y < targetHeight; y++) {
+                        for (int x = 0; x < targetWidth; x++) {
+                            writer.setArgb(x, y, reader.getArgb(x, y));
+                        }
+                    }
+
+                    return writableImage;
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("Error on downgradeImage(): {}", e.getMessage(), e);
+            return null;
+        }
     }
 }

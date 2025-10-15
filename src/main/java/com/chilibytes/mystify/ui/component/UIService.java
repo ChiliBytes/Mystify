@@ -1,10 +1,10 @@
 package com.chilibytes.mystify.ui.component;
 
+import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.core.feature.textoverlay.service.TextOverlayEventHandlerService;
 import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.general.service.UndoService;
 import com.chilibytes.mystify.general.service.ZoomService;
-import com.chilibytes.mystify.config.ApplicationProperties;
 import com.chilibytes.mystify.ui.common.UIControlCreator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.scene.Scene;
@@ -50,6 +50,8 @@ public class UIService {
     Button clearButton;
     Button undoButton;
     Button btnTextOverlay;
+    Button btnRotateClockwise;
+    Button btnTest;
 
     public void initializeUI(Stage primaryStage) {
         log.info("Initializing App UI ...");
@@ -66,8 +68,8 @@ public class UIService {
         BorderPane root = buildAllBorderControls(controlsPanel, menuBar, scrollPane, footer);
         buildAndShowScene(primaryStage, root);
 
-        MainEventHandlerService.CommonApplicationButtons commonApplicationButtons = new MainEventHandlerService.CommonApplicationButtons(loadButton, saveButton, resetButton,
-                clearButton, undoButton);
+        MainEventHandlerService.CommonApplicationButtons commonApplicationButtons = new MainEventHandlerService.CommonApplicationButtons(this.loadButton, this.saveButton, this.resetButton,
+                this.clearButton, this.undoButton, this.btnRotateClockwise, this.btnTest);
 
         MainEventHandlerService.CommonApplicationControls commonApplicationControls = new MainEventHandlerService.CommonApplicationControls(imageView,
                 principalLayoutsBuilder.getOuterZoomSlider());
@@ -85,12 +87,20 @@ public class UIService {
     private VBox initializeLeftPane() {
         this.loadButton = UIControlCreator.createIconButton(FontAwesomeIcon.FOLDER_OPEN, "Load Image");
         this.saveButton = UIControlCreator.createIconButton(FontAwesomeIcon.SAVE, "Save Image");
-        this.resetButton = UIControlCreator.createIconButton(FontAwesomeIcon.REFRESH, "Reset Image");
-        this.clearButton = UIControlCreator.createIconButton(FontAwesomeIcon.ERASER, "Clear Image");
+        this.resetButton = UIControlCreator.createIconButton(FontAwesomeIcon.HISTORY, "Reset Image");
+        this.clearButton = UIControlCreator.createIconButton(FontAwesomeIcon.BAN, "Clear Image");
         this.undoButton = UIControlCreator.createIconButton(FontAwesomeIcon.UNDO, "Undo");
-        this.btnTextOverlay = UIControlCreator.createIconButton(FontAwesomeIcon.FILE_WORD_ALT, "Text Overlay");
+        this.btnTextOverlay = UIControlCreator.createIconButton(FontAwesomeIcon.FONT, "Add Text");
+        this.btnRotateClockwise = UIControlCreator.createIconButton(FontAwesomeIcon.REFRESH, "Rotate Image");
+
+        this.btnTest = UIControlCreator.createIconButton(FontAwesomeIcon.FLASK, "Experimental Features");
+        this.btnTest.setVisible(applicationProperties.isTestsEnabled());
+
         undoButton.setDisable(true);
-        return principalLayoutsBuilder.createLeftControlsPanel(loadButton, saveButton, resetButton, clearButton, undoButton, btnTextOverlay);
+
+        return principalLayoutsBuilder.createLeftControlsPanel(this.loadButton, this.saveButton,
+                this.resetButton, this.clearButton, this.undoButton,
+                this.btnTextOverlay, this.btnRotateClockwise, this.btnTest);
     }
 
     private BorderPane buildAllBorderControls(VBox leftControlsPane, MenuBar topMenuBar,

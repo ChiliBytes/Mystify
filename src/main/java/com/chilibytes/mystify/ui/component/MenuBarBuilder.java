@@ -1,14 +1,15 @@
 package com.chilibytes.mystify.ui.component;
 
 import com.chilibytes.mystify.core.feature.blur.ui.AutoBlurDialog;
-import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
-import com.chilibytes.mystify.core.feature.imageoverlay.ui.ImageOverlayDialog;
-import com.chilibytes.mystify.core.feature.textoverlay.ui.FontSettingsDialog;
-import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import com.chilibytes.mystify.core.feature.blur.ui.CustomBlurDialog;
 import com.chilibytes.mystify.core.feature.collage.ui.CollageDialog;
+import com.chilibytes.mystify.core.feature.grayscale.ui.GrayScaleDialog;
+import com.chilibytes.mystify.core.feature.imageoverlay.ui.ImageOverlayDialog;
 import com.chilibytes.mystify.core.feature.pdf.ui.PdfMakerDialog;
+import com.chilibytes.mystify.core.feature.resize.ui.ResizeImageDialog;
+import com.chilibytes.mystify.core.feature.textoverlay.ui.FontSettingsDialog;
 import com.chilibytes.mystify.core.feature.video.ui.SlideshowDialog;
+import com.chilibytes.mystify.general.service.MainEventHandlerService;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -33,6 +34,7 @@ public class MenuBarBuilder {
     private final GrayScaleDialog grayScaleDialog;
     private final ImageOverlayDialog imageOverlayDialog;
     private final FontSettingsDialog fontSettingsDialog;
+    private final ResizeImageDialog resizeImageDialog;
 
     @Getter
     @Setter
@@ -79,9 +81,14 @@ public class MenuBarBuilder {
         MenuItem overlayImagesItem = new MenuItem("Overlay Images");
         overlayImagesItem.setOnAction(e -> imageOverlayDialog.showDialog());
 
-        Menu collageMenu = new Menu("Image Creation");
+        Menu collageMenu = new Menu("Image Editor");
         collageMenu.getItems().addAll(collageItem, images2PdfItem, overlayImagesItem);
 
+        MenuItem resizeImagesItem = new MenuItem("Downgrade from HD");
+        resizeImagesItem.setOnAction(e -> resizeImageDialog.showDialog());
+
+        Menu resizeMenu = new Menu("Image Resizer");
+        resizeMenu.getItems().addAll(resizeImagesItem);
 
         MenuItem fontSettingsItem = new MenuItem("Font Settings");
         fontSettingsItem.setOnAction(e -> fontSettingsDialog.showDialog());
@@ -97,7 +104,7 @@ public class MenuBarBuilder {
 
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu, settingsMenu,slideshowMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, blurMenu, collageMenu, settingsMenu, slideshowMenu, resizeMenu);
         menuBar.useSystemMenuBarProperty().set(false);
 
         return menuBar;
