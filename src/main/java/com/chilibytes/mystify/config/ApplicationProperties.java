@@ -44,6 +44,9 @@ public class ApplicationProperties {
     @Value("${app.core.images.allowed.extensions:jpg,jpeg,png,svg,JPG,JPEG,PNG,SVG}")
     private String[] allowedExtensions;
 
+    @Value("${dev.enable.test.button:false}")
+    private boolean testsEnabled;
+
     public List<String> getAppImagesAllowedExtensions() {
         return Arrays.asList(getAllowedExtensions());
     }
