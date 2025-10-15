@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class FontSettingsDialog extends BaseDialog {
     }
 
     @Override
-    public List<VBox> configureDialogLayout() {
+    public List<Pane> configureDialogLayout() {
         HBox fontSizeAndColor = createHBox(
                 createVbox(this.lblFontFamily, this.cbxFontFamily),
                 createVbox(this.lblFontColor, this.cpFontColor),
